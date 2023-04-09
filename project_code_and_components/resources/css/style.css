@@ -54,6 +54,7 @@ hr{
 .btn-outline-primary, .btn-outline-primary:active, .btn-outline-primary:visited{
     color: #a4cb03 !important;
     border: var(--bs-btn-border-width) solid #a4cb03;
+    --bs-btn-active-border-color: #a4cb03;
 }
 .btn-outline-primary:hover{
     background-color: #a4cb03 !important;
