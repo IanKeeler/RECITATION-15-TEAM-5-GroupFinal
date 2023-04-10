@@ -6,6 +6,7 @@ This only covers custom-added styling, and only includes Bootstrap components if
 
 This document contains information on the following:
 
+- Test page
 - Partials
 - Copy-able Hex Values
 - Containing page content
@@ -14,6 +15,10 @@ This document contains information on the following:
 - Images for use of icons
 
 It isn't necessary to read the entire thing to parse a section.
+
+# Test page
+
+In this directory, `test.html` is a basic HTML file that demonstrates several elements with the current style library applied to them and allows for testing elements and styling.  It is not necessary to run the server to view this page.
 
 # Partials
 
