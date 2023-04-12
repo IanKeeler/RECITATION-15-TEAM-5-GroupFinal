@@ -40,6 +40,7 @@ db.connect()
 // *****************************************************
 
 app.set('view engine', 'ejs'); // set the view engine to EJS
+app.use(express.static('resources'))
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 
 // initialize session variables
@@ -62,9 +63,9 @@ app.use(
 // *****************************************************
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
 // route styling
-app.get('/style.css', (req,res)=>{
-  res.send('pages/../../resources/css/style');
-});
+// app.get('/style', (req,res)=>{
+//   res.send('../../resources/css/style.css');
+// });
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
