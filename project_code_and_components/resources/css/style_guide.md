@@ -8,6 +8,7 @@ This document contains information on the following:
 
 - Test page
 - Partials
+- Using local assets
 - Copy-able Hex Values
 - Containing page content
 - Colored boxes
@@ -33,6 +34,14 @@ To use on a page:
 The navbar also is stored within its own partial, in case you don't want to use it on a page, and also for organization purposes.
 
     <%- include ('../partials/navbar') %>
+
+# Using Local Assets
+
+To use local assets (which should be stored in the `resources` folder), do not specify file paths from whatever file you are trying to pull the asset from.  Specify respective to the resource folder.
+
+For example, to access file `project_code_and_components/resources/img/logo_icon.png`:
+
+    img/logo_icon.png
 
 # Styles
 
