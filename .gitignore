@@ -1,6 +1,8 @@
 # macOS file: stores metadata of folders.  do not commit them
 .DS_Store
 
+package-lock.json
+
 # copied from lab 9
 
 # Logs
