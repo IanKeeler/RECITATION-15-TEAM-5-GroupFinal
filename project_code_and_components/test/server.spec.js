@@ -25,6 +25,28 @@ describe('Server!', () => {
 
   // ===========================================================================
   // TO-DO: Part A Login unit test case
-  
+  // test cases tested against test database; should fix later when real db functions
+  it('positive : /login', done =>{
+    chai 
+      .request(server)
+      .post('/login')
+      .send({username: 'testuser1', password: 'pass123'})
+      .end((err, res)=>{
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
 
+// login: invalid password
+it('negative : /login. Checking invalid password', done => {
+  chai
+    .request(server)
+    .post('/login')
+    .send({username: 'testuser1', password: 'wrongpass'})
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      expect(res.body.message).to.equals('Error: Incorrect password');
+      done();
+    });
+});
 });
