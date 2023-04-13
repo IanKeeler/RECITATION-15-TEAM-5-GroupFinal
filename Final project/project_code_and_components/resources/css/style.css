@@ -1,0 +1,68 @@
+/* the style library version of colors here have extra 'ff' strings on them.
+   these are the alpha channels (control color transparency), which are set to 100% by default, so omitted here because they're not necessary.*/
+
+/* generic global styling --------------------------------------- */
+html{
+    background-color: #fcfffe;
+}
+
+h1, h2, h3, h4, h5, h6{
+    color: #a4cb03;
+}
+
+a{
+    color: #a4cb03;
+    text-decoration: underline;
+}
+
+a:hover{
+    color: #a4cb03;
+    text-decoration: none;
+}
+
+a:active{
+    color: #485a00;
+    text-decoration: none;
+}
+
+hr{
+    color: black;
+}
+
+/* content container --------------------------------------- */
+.content{
+    margin: 3rem;
+    color: #6c757d;
+}
+
+/* navbar --------------------------------------- */
+.navbar{
+    background-color: #cff17a !important;
+    border-bottom: 1px solid #485a00;
+}
+
+/* boxes --------------------------------------- */
+.box{
+    background-color: #e9eaec;
+    border: 1px solid #a4cb03;
+    color: #343a40;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+/* buttons --------------------------------------- */
+.btn-outline-primary, .btn-outline-primary:active, .btn-outline-primary:visited{
+    color: #a4cb03 !important;
+    border: var(--bs-btn-border-width) solid #a4cb03;
+    --bs-btn-active-border-color: #a4cb03;
+}
+.btn-outline-primary:hover{
+    background-color: #a4cb03 !important;
+    color: #fcfffe !important;
+    border: var(--bs-btn-border-width) solid #a4cb03;
+}
+
+/* images --------------------------------------- */
+.icon{
+    border-radius: 50%;
+}
