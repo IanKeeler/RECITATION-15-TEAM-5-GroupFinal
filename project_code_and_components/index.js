@@ -69,7 +69,78 @@ app.use(
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
-    res.render('pages/login.ejs');
+    res.redirect('/login');
+});
+
+// force hashes to forcibly add users thru create.sql: change variable 'password' and load api route; will show before proper stuff for login page
+app.get('/force_hash', async(req,res)=>{
+  let password = 'pass3';
+  console.log(password);
+  let hashed = await bcrypt.hash(password,10);
+
+  res.render('pages/login.ejs', {message: hashed});
+});
+
+// lab 11 --------------------------------------------------
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
+
+// login routines --------------------------------------------------
+app.get('/login', (req,res)=>{
+  res.render('pages/login.ejs');
+});
+
+app.post('/login', (req,res)=>{
+  // actual database query
+  // const person = `SELECT * FROM user WHERE userName = '${req.body.username}';`;
+
+  // test db query SWAP FOR ACTUAL
+  const person = `SELECT * FROM users WHERE username = '${req.body.username}';`;
+  
+  db.any(person)
+  .then(async data=>{
+    // check if user has registered
+    console.log('data retrieved from user fetch:::::', data);
+    if(!data[0]){
+      console.log('no user found; redirecting to register');
+      res.redirect('/register');
+      
+    // user actually found
+    } else {
+      const match = await bcrypt.compare(req.body.password, data[0].password); // hash
+      console.log('password check match::::', match);
+      // create user session if match
+      if(match){
+        console.log('user found and passwords matched; redirecting to home');
+        req.session.user = data[0];
+        req.session.save();
+  
+        // for test lab purposes
+        // res.send({status: 200, message: "success"});
+
+        // for actual implementation
+        res.redirect('/home');
+      }else{
+        console.log('passwords didn\'t match');
+        throw Error('Incorrect password');
+      }
+    }
+  })
+  // resend to login if incorrect data match
+  .catch(err=>{
+    console.log('error:::', err);
+    // for test case implementation
+    // res.send({status: 200, message: 'Error: Incorrect password'});
+
+    // for actual implementation
+    res.render('pages/login.ejs', {message: err});
+  });
+});
+
+// home routines --------------------------------------------------
+app.get('/home', (req,res)=>{
+
 });
 
 
@@ -77,5 +148,11 @@ app.get('/', (req,res)=>{
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+
+// app.listen alone: for actual server function
+// app.listen(3000);
+
+// module.exports: for testing
+module.exports = app.listen(3000);
+
 console.log('Server is listening on port 3000');
