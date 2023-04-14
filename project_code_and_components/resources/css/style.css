@@ -1,5 +1,5 @@
 /* the style library version of colors here have extra 'ff' strings on them.
-   these are the alpha channels (control color transparency), which are set to 100% by default, so omitted here because they're not necessary.*/
+   these are the alpha channels (control color transparency), which are set to 100% by default, so omitted here because they're not necessary. */
 
 /* generic global styling --------------------------------------- */
 html{
@@ -65,4 +65,14 @@ hr{
 /* images --------------------------------------- */
 .icon{
     border-radius: 50%;
+}
+
+/* page specific --------------------------------------- */
+.credential-form{
+    width: 50%;
+    display: grid;
+    column-gap: 3rem;
+    row-gap: 0.5rem;
+    grid-template-columns: 0.3fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
 }
