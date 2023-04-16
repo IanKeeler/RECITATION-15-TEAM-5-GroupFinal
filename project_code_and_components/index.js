@@ -138,6 +138,37 @@ app.post('/login', (req,res)=>{
   });
 });
 
+// registration routines --------------------------------------------------
+app.get('/register', (req,res)=>{
+  res.render('pages/register.ejs');
+});
+
+app.post('/register', async(req,res)=>{
+  // add to user table
+  const passwordHash = await bcrypt.hash(req.body.password, 10);
+
+  // carbon score ?????
+  let carbonScore = 50;
+
+  // insert into db
+  let query = 'INSERT INTO user (userName, userPassword) VALUES $1, $2 RETURNING *;';
+  db.any(query, [
+    req.body.username,
+    passwordHash
+  ])
+  .then(function(data){
+    console.log(data);
+    console.log('registration successful');
+    res.status(200);
+    res.redirect('/login');
+  })
+  .catch(err=>{
+    console.log(err);
+    res.status(400);
+    res.redirect('/register');
+  })
+})
+
 // home routines --------------------------------------------------
 app.get('/home', (req,res)=>{
 
