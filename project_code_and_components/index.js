@@ -74,7 +74,7 @@ app.get('/', (req,res)=>{
 
 // force hashes to forcibly add users thru create.sql: change variable 'password' and load api route; will show before proper stuff for login page
 app.get('/force_hash', async(req,res)=>{
-  let password = 'pass3';
+  let password = 'pass2';
   console.log(password);
   let hashed = await bcrypt.hash(password,10);
 
@@ -108,7 +108,7 @@ app.post('/login', (req,res)=>{
       
     // user actually found
     } else {
-      const match = await bcrypt.compare(req.body.password, data[0].password); // hash
+      const match = await bcrypt.compare(req.body.password, data[0].user_password); // hash
       console.log('password check match::::', match);
       // create user session if match
       if(match){
@@ -151,13 +151,13 @@ app.post('/register', async(req,res)=>{
   let carbonScore = 50;
 
   // insert into db
-  let query = 'INSERT INTO user (userName, userPassword) VALUES $1, $2 RETURNING *;';
+  let query = 'INSERT INTO users (username, user_password) VALUES ($1, $2) RETURNING *;';
   db.any(query, [
     req.body.username,
     passwordHash
   ])
   .then(function(data){
-    console.log(data);
+    console.log('data::::', data);
     console.log('registration successful');
     res.status(200);
     res.redirect('/login');
