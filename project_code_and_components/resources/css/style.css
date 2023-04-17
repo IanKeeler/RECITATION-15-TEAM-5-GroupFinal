@@ -76,3 +76,12 @@ hr{
     grid-template-columns: 0.3fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
 }
+
+.login-register-box{
+    display: grid;
+    grid-template-columns: 0.4fr 2fr;
+}
+
+.log-reg-img{
+    width: 100%;
+}
