@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
   user_id SERIAL PRIMARY KEY,
   username VARCHAR(45) NOT NULL,
-  user_password VARCHAR(45) NOT NULL,
+  user_password VARCHAR(300) NOT NULL,
   CONSTRAINT "username_unique" UNIQUE ("username")
 );
 
@@ -73,3 +73,15 @@ CREATE TABLE electricity(
   --   ON DELETE CASCADE
   --   ON UPDATE CASCADE
 );
+
+-- -----------------------------------------------------
+-- initialize test users: currently only here for login/registration
+-- -----------------------------------------------------
+
+-- unhashed passwords (respectively)
+-- pass1
+-- pass2
+-- pass3
+INSERT INTO users (username, user_password) VALUES ('user1', '$2b$10$4KoZfQeiD9MDlI5YRzMZtuBIJbXgjz.QqsZRmDG4NCfsXPSW4APWm');
+INSERT INTO users (username, user_password) VALUES ('user2', '$2b$10$yPeUvrbER1W.Y/NGiffn8usAZFmltMhFB1BFo15jaBUX2dBcKzK76');
+INSERT INTO users (username, user_password) VALUES ('user3', '$2b$10$SpdLRI.7Eb7qF94c44nI4eMWqTf75mHGqGTYb8X3FEZR0yAX/fp/6');
