@@ -19,15 +19,11 @@ CREATE TABLE travel(
   travel_mode VARCHAR(45) NOT NULL,
   travel_distance INT NOT NULL,
   emissions INT NOT NULL,
-  date DATE NOT NULL
-
-  -- FOREIGN KEY (user_id) REFERENCES users(user_id)
-
-  -- CONSTRAINT "fk_user_id"
-  --   FOREIGN KEY (user_id)
-  --   REFERENCES users(user_id)
-  --   ON DELETE CASCADE
-  --   ON UPDATE CASCADE
+  date DATE NOT NULL,
+  user_id INT NOT NULL,
+  CONSTRAINT user_id
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
 );
 
 -- -----------------------------------------------------
@@ -41,15 +37,10 @@ CREATE TABLE freight(
   freight_distance INT NOT NULL,
   emissions VARCHAR(45) NOT NULL,
   date DATE NOT NULL,
-  user_id INT NOT NULL
-
-  -- FOREIGN KEY (user_id) REFERENCES users(user_id)
-
-  -- CONSTRAINT "fk_user_id"
-  --   FOREIGN KEY (user_id)
-  --   REFERENCES users(user_id)
-  --   ON DELETE CASCADE
-  --   ON UPDATE CASCADE
+  user_id INT NOT NULL,
+  CONSTRAINT user_id
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
 );
 
 -- -----------------------------------------------------
@@ -62,16 +53,10 @@ CREATE TABLE electricity(
   electricity_used INT NOT NULL,
   emissions INT NOT NULL,
   date DATE NOT NULL,
-  user_id INT NOT NULL
-
-
-  -- FOREIGN KEY (user_id) REFERENCES users(user_id)
-
-  -- CONSTRAINT "fk_user_id"
-  --   FOREIGN KEY (user_id)
-  --   REFERENCES users(user_id)
-  --   ON DELETE CASCADE
-  --   ON UPDATE CASCADE
+  user_id INT NOT NULL,
+  CONSTRAINT user_id
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
 );
 
 -- -----------------------------------------------------
@@ -85,3 +70,4 @@ CREATE TABLE electricity(
 INSERT INTO users (username, user_password) VALUES ('user1', '$2b$10$4KoZfQeiD9MDlI5YRzMZtuBIJbXgjz.QqsZRmDG4NCfsXPSW4APWm');
 INSERT INTO users (username, user_password) VALUES ('user2', '$2b$10$yPeUvrbER1W.Y/NGiffn8usAZFmltMhFB1BFo15jaBUX2dBcKzK76');
 INSERT INTO users (username, user_password) VALUES ('user3', '$2b$10$SpdLRI.7Eb7qF94c44nI4eMWqTf75mHGqGTYb8X3FEZR0yAX/fp/6');
+
