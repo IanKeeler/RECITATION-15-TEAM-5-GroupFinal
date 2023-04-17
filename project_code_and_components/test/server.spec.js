@@ -37,16 +37,28 @@ describe('Server!', () => {
       });
   });
 
-// login: invalid password
-it('negative : /login. Checking invalid password', done => {
-  chai
-    .request(server)
-    .post('/login')
-    .send({username: 'testuser1', password: 'wrongpass'})
-    .end((err, res) => {
-      expect(res).to.have.status(200);
-      expect(res.body.message).to.equals('Error: Incorrect password');
-      done();
-    });
-});
+  // login: invalid password
+  it('negative : /login. Checking invalid password', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'testuser1', password: 'wrongpass'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Error: Incorrect password');
+        done();
+      });
+  });
+
+  // register: successful registration
+  it('positive: /register.  Checking for successful user registration', done =>{
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: 'userx', password: 'passxyz'})
+      .end((err, res)=>{
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
 });
