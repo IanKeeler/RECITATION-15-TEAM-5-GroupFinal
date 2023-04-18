@@ -174,6 +174,10 @@ app.get('/home', (req,res)=>{
 
 });
 
+// log routines --------------------------------------------------
+app.get('/log', (req,res) => {
+  res.render('pages/log.ejs');
+});
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
