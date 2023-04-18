@@ -178,6 +178,37 @@ app.get('/home', (req,res) => {
   res.render('pages/home');
 });
 
+// leaderboard routines -------------------------------------------
+
+const t_leaderboard_all = 'SELECT u.username, SUM(t.emissions) AS total_emissions FROM users u INNER JOIN travel t ON u.user_id = t.user_id GROUP BY u.user_id ORDER BY total_emissions;';
+app.get('/t_leaderboard', (req, res) => {
+  db.any(t_leaderboard_all)
+    .then((t_leaders) => {
+      res.render('pages/t_leaderboard.ejs', {
+        t_leaders,
+      });
+    });
+});
+
+const f_leaderboard_all = 'SELECT u.username, SUM(f.emissions) AS total_emissions FROM users u INNER JOIN freight f ON u.user_id = f.user_id GROUP BY u.user_id ORDER BY total_emissions;';
+app.get('/f_leaderboard', (req, res) => {
+  db.any(f_leaderboard_all)
+    .then((f_leaders) => {
+      res.render('pages/f_leaderboard.ejs', {
+        f_leaders,
+      });
+    });
+});
+
+const e_leaderboard_all = 'SELECT u.username, SUM(e.emissions) AS total_emissions FROM users u INNER JOIN electricity e ON u.user_id = e.user_id GROUP BY u.user_id ORDER BY total_emissions;';
+app.get('/e_leaderboard', (req, res) => {
+  db.any(e_leaderboard_all)
+    .then((e_leaders) => {
+      res.render('pages/e_leaderboard.ejs', {
+        e_leaders,
+      });
+    });
+});
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
