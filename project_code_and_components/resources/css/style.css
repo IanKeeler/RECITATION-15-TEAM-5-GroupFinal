@@ -55,11 +55,19 @@ hr{
     color: #a4cb03 !important;
     border: var(--bs-btn-border-width) solid #a4cb03;
     --bs-btn-active-border-color: #a4cb03;
+    background-color: #fcfffe !important;
 }
 .btn-outline-primary:hover{
     background-color: #a4cb03 !important;
     color: #fcfffe !important;
     border: var(--bs-btn-border-width) solid #a4cb03;
+}
+
+.btn-outline-secondary, .btn-outline-secondary:active, .btn-outline-secondary:visited{
+    background-color: #fcfffe !important;
+}
+.btn-outline-secondary:hover{
+    background-color: var(--bs-btn-color) !important;
 }
 
 /* images --------------------------------------- */
