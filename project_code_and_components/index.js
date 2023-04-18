@@ -69,7 +69,7 @@ app.use(
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
-    res.redirect('/login');
+    res.redirect('/log');
 });
 
 // force hashes to forcibly add users thru create.sql: change variable 'password' and load api route; will show before proper stuff for login page
@@ -170,9 +170,14 @@ app.post('/register', async(req,res)=>{
 })
 
 // home routines --------------------------------------------------
-app.get('/home', (req,res)=>{
+app.get("/login", (req, res) => {
+  res.render("pages/home"); 
+  });
 
+app.get('/home', (req,res) => {
+  res.render('pages/home');
 });
+
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
