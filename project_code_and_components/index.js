@@ -62,20 +62,177 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
-// route styling
-// app.get('/style', (req,res)=>{
-//   res.send('../../resources/css/style.css');
-// });
+// GLOBAL VARIABLES
+let username = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
-    res.render('pages/login.ejs');
+    res.redirect('/log');
 });
 
+// force hashes to forcibly add users thru create.sql: change variable 'password' and load api route; will show before proper stuff for login page
+app.get('/force_hash', async(req,res)=>{
+  let password = 'pass2';
+  console.log(password);
+  let hashed = await bcrypt.hash(password,10);
+
+  res.render('pages/login.ejs', {message: hashed});
+});
+
+// lab 11 --------------------------------------------------
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
+
+// login routines --------------------------------------------------
+app.get('/login', (req,res)=>{
+  res.render('pages/login.ejs');
+});
+
+app.post('/login', (req,res)=>{
+  // actual database query
+  // const person = `SELECT * FROM user WHERE userName = '${req.body.username}';`;
+
+  // test db query SWAP FOR ACTUAL
+  const person = `SELECT * FROM users WHERE username = '${req.body.username}';`;
+  
+  db.any(person)
+  .then(async data=>{
+    // check if user has registered
+    console.log('data retrieved from user fetch:::::', data);
+    if(!data[0]){
+      console.log('no user found; redirecting to register');
+      res.redirect('/register');
+      
+    // user actually found
+    } else {
+      const match = await bcrypt.compare(req.body.password, data[0].user_password); // hash
+      console.log('password check match::::', match);
+      // create user session if match
+      if(match){
+        console.log('user found and passwords matched; redirecting to home; user:', req.body.username);
+
+        username = req.body.username; // for later use
+        req.session.user = data[0];
+        req.session.save();
+  
+        // for test lab purposes
+        // res.send({status: 200, message: "success"});
+
+        // for actual implementation
+        res.redirect('/home');
+      }else{
+        console.log('passwords didn\'t match');
+        throw Error('Incorrect password');
+      }
+    }
+  })
+  // resend to login if incorrect data match
+  .catch(err=>{
+    console.log('error:::', err);
+    // for test case implementation
+    // res.send({status: 200, message: 'Error: Incorrect password'});
+
+    // for actual implementation
+    res.render('pages/login.ejs', {message: err});
+  });
+});
+
+// registration routines --------------------------------------------------
+app.get('/register', (req,res)=>{
+  res.render('pages/register.ejs');
+});
+
+app.post('/register', async(req,res)=>{
+  // add to user table
+  const passwordHash = await bcrypt.hash(req.body.password, 10);
+
+  // carbon score ?????
+  let carbonScore = 50;
+
+  // insert into db
+  let query = 'INSERT INTO users (username, user_password) VALUES ($1, $2) RETURNING *;';
+  db.any(query, [
+    req.body.username,
+    passwordHash
+  ])
+  .then(function(data){
+    console.log('data::::', data);
+    console.log('registration successful');
+    res.status(200);
+    res.redirect('/login');
+  })
+  .catch(err=>{
+    console.log(err);
+    res.status(400);
+    res.redirect('/register');
+  })
+})
+
+// everything after here requires user to be logged in
+// Authentication Middleware.
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    // Default to login page.
+    return res.redirect('/login');
+  }
+  next();
+};
+
+// Authentication Required
+app.use(auth); 
+
+// home routines --------------------------------------------------
+app.get('/home', (req,res) => {
+  res.render('pages/home');
+});
+
+// leaderboard routines -------------------------------------------
+
+const t_leaderboard_all = 'SELECT u.username, SUM(t.emissions) AS total_emissions FROM users u INNER JOIN travel t ON u.user_id = t.user_id GROUP BY u.user_id ORDER BY total_emissions;';
+app.get('/t_leaderboard', (req, res) => {
+  db.any(t_leaderboard_all)
+    .then((t_leaders) => {
+      res.render('pages/t_leaderboard.ejs', {
+        t_leaders,
+      });
+    });
+});
+
+const f_leaderboard_all = 'SELECT u.username, SUM(f.emissions) AS total_emissions FROM users u INNER JOIN freight f ON u.user_id = f.user_id GROUP BY u.user_id ORDER BY total_emissions;';
+app.get('/f_leaderboard', (req, res) => {
+  db.any(f_leaderboard_all)
+    .then((f_leaders) => {
+      res.render('pages/f_leaderboard.ejs', {
+        f_leaders,
+      });
+    });
+});
+
+const e_leaderboard_all = 'SELECT u.username, SUM(e.emissions) AS total_emissions FROM users u INNER JOIN electricity e ON u.user_id = e.user_id GROUP BY u.user_id ORDER BY total_emissions;';
+app.get('/e_leaderboard', (req, res) => {
+  db.any(e_leaderboard_all)
+    .then((e_leaders) => {
+      res.render('pages/e_leaderboard.ejs', {
+        e_leaders,
+      });
+    });
+});
+
+// log routines --------------------------------------------------
+app.get('/log', (req,res) => {
+  res.render('pages/log.ejs');
+});
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+
+// app.listen alone: for actual server function
+// app.listen(3000);
+
+// module.exports: for testing
+module.exports = app.listen(3000);
+
 console.log('Server is listening on port 3000');

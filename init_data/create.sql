@@ -1,80 +1,87 @@
--- TEST DATABASE 
-CREATE TABLE IF NOT EXISTS users(
-    username VARCHAR(50) PRIMARY KEY NOT NULL,
-    password CHAR(60) NOT NULL
+-- -----------------------------------------------------
+-- Table user
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS users CASCADE;
+CREATE TABLE users(
+  user_id SERIAL PRIMARY KEY,
+  username VARCHAR(45) NOT NULL,
+  user_password VARCHAR(300) NOT NULL,
+  CONSTRAINT "username_unique" UNIQUE ("username")
 );
 
--- unhashed pass: pass1
-INSERT INTO users (username, password) VALUES ('testuser1', '$2b$10$kqkm5sPQur4SJAR2Nxwvcup21ImbIjtKR8vnL13Z.xzSFyByZ//Kq');
--- unhashed pass: pass2
-INSERT INTO users (username, password) VALUES ('testuser2', '$2b$10$sQQylW6wyYeJ417vdOS0ku2nOflF32EshBvcp/20fd5FGJGPxvRCy');
--- unhasehd pass: pass3
-INSERT INTO users (username, password) VALUES ('testuser2', '$2b$10$j03pTSgxQ9YqCTCkY4upDO.UhFI6rhjsXxvqiFVx8A/ZSepqbjsQq');
+-- -----------------------------------------------------
+-- Table travel
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS travel CASCADE;
+CREATE TABLE travel(
+  travel_id SERIAL PRIMARY KEY,
+  travel_mode VARCHAR(45) NOT NULL,
+  travel_distance INT NOT NULL,
+  emissions INT NOT NULL,
+  date DATE NOT NULL,
+  user_id INT NOT NULL,
+  CONSTRAINT user_id
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
+);
 
--- ACTUAL GREENCHALLENGE STUFF
--- -- -----------------------------------------------------
--- -- Table `GreenChallenge`.`user`
--- -- -----------------------------------------------------
--- CREATE TABLE IF NOT EXISTS `GreenChallenge`.`user` (
---   `userID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
---   `userName` VARCHAR(45) NOT NULL,
---   `userPassword` VARCHAR(45) NOT NULL,
---   PRIMARY KEY (`userID`),
---   UNIQUE INDEX `UserName_UNIQUE` (`userName` ASC) VISIBLE);
+-- -----------------------------------------------------
+-- Table freight
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS freight CASCADE;
+CREATE TABLE freight(
+  freight_id SERIAL PRIMARY KEY,
+  freight_mode VARCHAR(45) NOT NULL,
+  freight_weight INT NOT NULL,
+  freight_distance INT NOT NULL,
+  emissions INT NOT NULL,
+  date DATE NOT NULL,
+  user_id INT NOT NULL,
+  CONSTRAINT user_id
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
+);
 
+-- -----------------------------------------------------
+-- Table electricity
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS electricity CASCADE;
+CREATE TABLE electricity(
+  electricity_id SERIAL PRIMARY KEY,
+  electricity_mode VARCHAR(45) NOT NULL,
+  electricity_used INT NOT NULL,
+  emissions INT NOT NULL,
+  date DATE NOT NULL,
+  user_id INT NOT NULL,
+  CONSTRAINT user_id
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
+);
 
--- -- -----------------------------------------------------
--- -- Table `GreenChallenge`.`travel`
--- -- -----------------------------------------------------
--- CREATE TABLE IF NOT EXISTS `GreenChallenge`.`travel` (
---   `travelID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
---   `travelMode` VARCHAR(45) NOT NULL,
---   `travelDistance` INT UNSIGNED NOT NULL,
---   `emissions` INT UNSIGNED NOT NULL,
---   `date` DATE NOT NULL,
---   `userID` INT UNSIGNED NOT NULL,
---   PRIMARY KEY (`travelID`),
---   INDEX `userID_idx` (`userID` ASC) VISIBLE,
---   CONSTRAINT `userID`
---     FOREIGN KEY (`userID`)
---     REFERENCES `GreenChallenge`.`user` (`userID`)
---     ON DELETE CASCADE
---     ON UPDATE CASCADE);
+-- -----------------------------------------------------
+-- initialize test users: currently only here for login/registration
+-- -----------------------------------------------------
 
+-- unhashed passwords (respectively)
+-- pass1
+-- pass2
+-- pass3
+INSERT INTO users (username, user_password) VALUES ('user1', '$2b$10$4KoZfQeiD9MDlI5YRzMZtuBIJbXgjz.QqsZRmDG4NCfsXPSW4APWm');
+INSERT INTO users (username, user_password) VALUES ('user2', '$2b$10$yPeUvrbER1W.Y/NGiffn8usAZFmltMhFB1BFo15jaBUX2dBcKzK76');
+INSERT INTO users (username, user_password) VALUES ('user3', '$2b$10$SpdLRI.7Eb7qF94c44nI4eMWqTf75mHGqGTYb8X3FEZR0yAX/fp/6');
 
--- -- -----------------------------------------------------
--- -- Table `GreenChallenge`.`freight`
--- -- -----------------------------------------------------
--- CREATE TABLE IF NOT EXISTS `GreenChallenge`.`freight` (
---   `freightID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
---   `freightMode` VARCHAR(45) NOT NULL,
---   `freightWeight` INT UNSIGNED NOT NULL,
---   `freightDistance` INT UNSIGNED NOT NULL,
---   `emissions` VARCHAR(45) NOT NULL,
---   `date` DATE NOT NULL,
---   `userID` INT UNSIGNED NOT NULL,
---   PRIMARY KEY (`freightID`),
---   INDEX `userID_idx` (`userID` ASC) VISIBLE,
---   CONSTRAINT `userID`
---     FOREIGN KEY (`userID`)
---     REFERENCES `GreenChallenge`.`user` (`userID`)
---     ON DELETE CASCADE
---     ON UPDATE CASCADE);
+-- -----------------------------------------------------
+-- test data for leaderboard
+-- -----------------------------------------------------
 
+INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 16, 20, '2023-04-01', 1);
+INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 16, 10, '2023-04-01', 2);
+INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 16, 5, '2023-04-01', 3);
 
--- -- -----------------------------------------------------
--- -- Table `GreenChallenge`.`electricity`
--- -- -----------------------------------------------------
--- CREATE TABLE IF NOT EXISTS `GreenChallenge`.`electricity` (
---   `electricityID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
---   `electricityMode` VARCHAR(45) NOT NULL,
---   `electricityUsed` INT UNSIGNED NOT NULL,
---   `emissions` INT UNSIGNED NOT NULL,
---   `date` DATE NOT NULL,
---   `userID` INT UNSIGNED NOT NULL,
---   INDEX `userID_idx` (`userID` ASC) VISIBLE,
---   CONSTRAINT `userID`
---     FOREIGN KEY (`userID`)
---     REFERENCES `GreenChallenge`.`user` (`userID`)
---     ON DELETE CASCADE
---     ON UPDATE CASCADE);
+INSERT INTO freight (freight_mode, freight_weight, freight_distance, emissions, date, user_id) VALUES ('road', 15, 25, 30, '2023-04-01', 1);
+INSERT INTO freight (freight_mode, freight_weight, freight_distance, emissions, date, user_id) VALUES ('road', 15, 25, 15, '2023-04-01', 2);
+INSERT INTO freight (freight_mode, freight_weight, freight_distance, emissions, date, user_id) VALUES ('road', 15, 25, 7, '2023-04-01', 3);
+
+INSERT INTO electricity (electricity_mode, electricity_used, emissions, date, user_id) VALUES ('charge device', 25, 10, '2023-04-01', 1);
+INSERT INTO electricity (electricity_mode, electricity_used, emissions, date, user_id) VALUES ('charge device', 25, 5, '2023-04-01', 2);
+INSERT INTO electricity (electricity_mode, electricity_used, emissions, date, user_id) VALUES ('charge device', 25, 2, '2023-04-01', 3);

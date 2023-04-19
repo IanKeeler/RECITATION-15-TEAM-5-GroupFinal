@@ -3,8 +3,8 @@
 <main class = "content login-register-box">
     <%- include ('../partials/message') %>
     <img src = "img/logo_icon.png" class = "log-reg-img">
-    <form action = "/login" method = "POST" class = "credential-form">
-        <h3>Welcome</h3>
+    <form action = "/register" method = "POST" class = "credential-form">
+        <h3>Register</h3>
         <br>
         
         <label for = "username"> Username </label>
@@ -13,8 +13,8 @@
         <label for = "password"> Password </label>
         <input type = "password" name = "password" id = "password">
 
-        <button type = "submit" class = "btn btn-outline-primary">Login</button>
-        <div>Don't have an account?  <a href = "/register">Register.</a></div>
+        <button type = "submit" class = "btn btn-outline-primary">Register</button>
+        <div>Already have an account?  <a href = "/login">Login</a></div>
     </form>
 </main>
 <%- include ('../partials/footer') %>

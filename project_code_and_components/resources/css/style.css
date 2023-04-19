@@ -1,5 +1,5 @@
 /* the style library version of colors here have extra 'ff' strings on them.
-   these are the alpha channels (control color transparency), which are set to 100% by default, so omitted here because they're not necessary.*/
+   these are the alpha channels (control color transparency), which are set to 100% by default, so omitted here because they're not necessary. */
 
 /* generic global styling --------------------------------------- */
 html{
@@ -55,6 +55,7 @@ hr{
     color: #a4cb03 !important;
     border: var(--bs-btn-border-width) solid #a4cb03;
     --bs-btn-active-border-color: #a4cb03;
+    background-color: #fcfffe !important;
 }
 .btn-outline-primary:hover{
     background-color: #a4cb03 !important;
@@ -62,7 +63,33 @@ hr{
     border: var(--bs-btn-border-width) solid #a4cb03;
 }
 
+.btn-outline-secondary, .btn-outline-secondary:active, .btn-outline-secondary:visited{
+    background-color: #fcfffe !important;
+}
+.btn-outline-secondary:hover{
+    background-color: var(--bs-btn-color) !important;
+}
+
 /* images --------------------------------------- */
 .icon{
     border-radius: 50%;
+}
+
+/* page specific --------------------------------------- */
+.credential-form{
+    width: 50%;
+    display: grid;
+    column-gap: 3rem;
+    row-gap: 0.5rem;
+    grid-template-columns: 0.3fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+
+.login-register-box{
+    display: grid;
+    grid-template-columns: 0.4fr 2fr;
+}
+
+.log-reg-img{
+    width: 100%;
 }

@@ -1,0 +1,6 @@
+<!-- feedback messages: changes between bootstrap danger/success alerts based on whether or not error returned -->
+<% if (locals.message){ %>
+    <div class = "alert-<%- locals.error ? 'danger' : 'success' %>" role = "alert">
+        <%= message %>
+    </div>
+<% } %>

@@ -1,0 +1,28 @@
+
+Day (M/D)	Time	Decisions Made	Alternative Actions/Options Discussed	Follow-Up: Agreed Roles/Responsibilities
+4/11	9:00-9:19			
+				
+				
+				
+4/11 - Joe Powers scribe
+TA meeting notes week 1: 
+-for creating fake data we dont want to have skewed data, should be able to have someone input their data during presentation
+-show our data however we want and present a small viable project next week and do more if we are buzzing, going forward update project board, merge all branches to main line, application should be up and running by next week, need a release note for week 1 and week 2 
+-by the end of week 2, break into teams of UI and backend, use website to randomize data and have that data in create.sql to test, 
+-what are we going to do for next week -  registration login password, lock in what we want to finish functionalities, should be just about finished by week 3
+- do a global leaderboard instead of random people that just shares all user data in order
+
+4/11 Team meeting Joe Powers scribe
+-should focus on planning and organization and start with the project board
+-worked on finalizng project framescope and if we want to have a profile or home page
+-Joe-(home page), Dayne - log page, Ben - backend/log, Ethan - navbar/leaderboard/overall help, Ian - login
+-worked out a plan to focus on the ui first and have a good base before fully committing to working with the api
+-worked on straightening out story board and assigning 
+
+Plan for next week:
+
+-Get the home page to properly show a randomized tip as well as actually display the user data being pulled once we figure out the api
+-narrow down what we really want to have able to be tracked
+-start working on the leaderboard and get the template set up for that
+
+

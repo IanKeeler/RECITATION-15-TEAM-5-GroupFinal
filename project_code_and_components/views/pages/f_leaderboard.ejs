@@ -1,0 +1,24 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/navbar') %>
+<main>
+    <div class="container">
+    <h3>Freight Emissions Leaderboard</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">USERNAME</th>
+            <th scope="col">EMISSIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% f_leaders.forEach(function(leader) { %>
+              <tr>
+                <td><%= leader.username %></td>
+                <td><%= leader.total_emissions %></td>
+              </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    </div>
+</main>
+<%- include ('../partials/footer') %>
