@@ -50,6 +50,8 @@ describe('Server!', () => {
       });
   });
 
+  // PART B: POSITIVE/NEGATIVE TEST ON REGISTER
+
   // register: successful registration
   it('positive: /register.  Checking for successful user registration', done =>{
     chai
@@ -61,4 +63,17 @@ describe('Server!', () => {
         done();
       });
   });
+
+  // register: duplicate user
+  it('negative: /register.  Checks for duplicate username', done=>{
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: 'user1', password: 'whatever'})
+      .end((err, res=>{
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Error: Username taken');
+        done();
+      }))
+  })
 });
