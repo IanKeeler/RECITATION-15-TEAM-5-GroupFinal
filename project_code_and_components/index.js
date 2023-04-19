@@ -90,10 +90,8 @@ app.get('/login', (req,res)=>{
 });
 
 app.post('/login', (req,res)=>{
-  // actual database query
-  // const person = `SELECT * FROM user WHERE userName = '${req.body.username}';`;
 
-  // test db query SWAP FOR ACTUAL
+  // ACTUAL db query
   const person = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   
   db.any(person)
