@@ -170,12 +170,25 @@ app.post('/register', async(req,res)=>{
 })
 
 // home routines --------------------------------------------------
-app.get("/login", (req, res) => {
-  res.render("pages/home"); 
-  });
+// TIPS ARRAY: change strings in these to represent tips that someone can recieve
+// NO OTHER code manipulation necessary to access tips
+const tips = [
+  'i didn\'t look up actual tips about carbon emissions',
+  'but i\'m including these filler strings to demonstrate functionality',
+  'the leading cause of carbon emissions in the world is carbon'
+];
 
-app.get('/home', (req,res) => {
-  res.render('pages/home');
+// call this function to generate tips
+async function getTip(){
+  let i = Math.floor(Math.random() * tips.length);
+  return tips[i];
+}
+
+app.get('/home', async(req,res) => {
+  // get tip to render on page
+  let tip = await getTip();
+
+  res.render('pages/home', {tip: tip});
 });
 
 // leaderboard routines -------------------------------------------
