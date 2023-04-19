@@ -62,10 +62,8 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
-// route styling
-// app.get('/style', (req,res)=>{
-//   res.send('../../resources/css/style.css');
-// });
+// GLOBAL VARIABLES
+let username = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
@@ -112,7 +110,9 @@ app.post('/login', (req,res)=>{
       console.log('password check match::::', match);
       // create user session if match
       if(match){
-        console.log('user found and passwords matched; redirecting to home');
+        console.log('user found and passwords matched; redirecting to home; user:', req.body.username);
+
+        username = req.body.username; // for later use
         req.session.user = data[0];
         req.session.save();
   
@@ -169,11 +169,20 @@ app.post('/register', async(req,res)=>{
   })
 })
 
-// home routines --------------------------------------------------
-app.get("/login", (req, res) => {
-  res.render("pages/home"); 
-  });
+// everything after here requires user to be logged in
+// Authentication Middleware.
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    // Default to login page.
+    return res.redirect('/login');
+  }
+  next();
+};
 
+// Authentication Required
+app.use(auth); 
+
+// home routines --------------------------------------------------
 app.get('/home', (req,res) => {
   res.render('pages/home');
 });
