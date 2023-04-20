@@ -203,6 +203,15 @@ app.get('/log', (req,res) => {
 });
 
 app.post('/log', (req, res) => {
+
+  // Inserts the input data from the travel log into the travel table
+  const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, date, user_id) VALUES ($1, $2, $3, $4)";
+  db.none(travelQuery, [req.body.travel_mode, req.body.distance, req.body.travel_date, req.body.username])
+  .catch(err => {
+     console.log("There was an error entering data into table", err);
+  });
+
+  // Dictionary that contains all different activity API calls for different travel modes
   emissionActivityId = {
     "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
     "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
@@ -210,6 +219,7 @@ app.post('/log', (req, res) => {
     "train": 'passenger_train-route_type_commuter_rail-fuel_source_na'
   }
 
+  // Travel API call
   axios({
     url: 'https://beta3.api.climatiq.io/estimate',
     method: 'POST',
@@ -223,12 +233,14 @@ app.post('/log', (req, res) => {
       },
       parameters: {
         'passengers': 1,
-        'distance': parseInt(req.body.miles),
+        'distance': parseInt(req.body.distance),
         'distance_unit': "mi"
       },
     },
   })
     .then(results => {
+      const emissionsQuery = "INSERT INTO travel (emissions) VALUES ($1)"
+      db.none(emissionsQuery, [results.data.co2e])
       console.log(results.data); 
     })
     .catch(error => {
