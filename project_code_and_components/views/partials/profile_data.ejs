@@ -1,0 +1,23 @@
+<div class="container">
+<h3>Recent Activity</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">MODE OF TRAVEL</th>
+                <th scope="col">MILES TRAVELLED</th>
+                <th scope="col">EMISSIONS</th>
+                <th scope="col">DATE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% user_trip.forEach(function(trip) { %>
+                <tr>
+                  <td><%= trip.travel_mode %></td>
+                  <td><%= trip.travel_distance %></td>
+                  <td><%= trip.emissions %></td>
+                  <td><%= trip.date %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>

@@ -192,7 +192,6 @@ app.get('/home', (req,res) => {
 });
 
 // leaderboard routines -------------------------------------------
-
 const leaderboard_all = 'SELECT username, user_carbonscore FROM users ORDER BY user_carbonscore;';
 app.get('/leaderboard', (req, res) => {
   db.any(leaderboard_all)
@@ -202,6 +201,16 @@ app.get('/leaderboard', (req, res) => {
       });
     });
 });
+
+// user profile data routines ------------------------------------
+// TODO~~~~
+const recent_trips = 'SELECT travel_mode, travel_distance, emissions, date FROM travel WHERE user_id = TODO;';
+app.get('/user_trips', (req, res) => {
+  db.any(recent_trips)
+    .then((user_trip) => {
+      res.render('pages/')
+    })
+})
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
