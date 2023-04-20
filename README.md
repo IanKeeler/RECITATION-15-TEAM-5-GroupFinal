@@ -46,10 +46,7 @@ Dayn Reoh - [daynreoh](https://github.com/daynreoh)
 
 1. Ensure you have the Docker daemon running on your machine by opening the Docker Desktop client
 2. Using your preferred CLI, navigate to the directory where you have GreenChallenge stored
-3. Run the following command:
-```
-docker compose up -d
-```
+3. Run the following command: `docker compose up -d`
 4. Open your preferred browser application
 5. In the address bar type 'http://localhost:3000' and press 'enter'
 6. Wait for the login page to render and enter your GreenChallenge account credentials or register a new account
@@ -57,7 +54,12 @@ docker compose up -d
 
 ### How to run the test suite
 
-TODO
+1. Navigate to the directory containing the GreenChallenge application
+2. From the root directory, navigate to the directory named project_code_and_components
+3. Open the file named docker-compose.yaml with your preferred text editor
+4. Under `web:`, comment out `command: 'npm start'`
+5. Directly below, uncomment `command: 'npm run testandrun'`
+6. Save the changes and follow the instructions under "How to run GreenChallenge locally"
 
 ### Link to the deployed version of GreenChallenge
 
