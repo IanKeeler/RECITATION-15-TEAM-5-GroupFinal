@@ -167,6 +167,12 @@ app.post('/register', async(req,res)=>{
   })
 })
 
+app.get('/logout', (req, res) => {
+  // Destroys the session.
+  req.session.destroy();
+  res.render("pages/login");
+});
+
 // everything after here requires user to be logged in
 // Authentication Middleware.
 const auth = (req, res, next) => {
