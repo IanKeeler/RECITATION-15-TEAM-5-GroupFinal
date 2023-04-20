@@ -202,6 +202,44 @@ app.get('/log', (req,res) => {
   res.render('pages/log.ejs');
 });
 
+app.post('/log', (req, res) => {
+  emissionActivityId = {
+    "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
+    "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
+    "bus": 'passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na',
+    "train": 'passenger_train-route_type_commuter_rail-fuel_source_na'
+  }
+
+  axios({
+    url: 'https://beta3.api.climatiq.io/estimate',
+    method: 'POST',
+    dataType: 'json',
+    headers: {
+      'Authorization': 'Bearer 2NETAQ30MA49W3HN99VP6SCZT6DC',
+    },
+    data: {
+      emission_factor: {
+        'activity_id': emissionActivityId[req.body.travel_mode],
+      },
+      parameters: {
+        'passengers': 1,
+        'distance': parseInt(req.body.miles),
+        'distance_unit': "mi"
+      },
+    },
+  })
+    .then(results => {
+      console.log(results.data); 
+    })
+    .catch(error => {
+      res.render('pages/log', {result: [], message: "The API call has failed."});
+    });
+});
+
+
+
+
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************

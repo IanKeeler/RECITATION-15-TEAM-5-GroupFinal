@@ -8,8 +8,8 @@
     </style>
     <script>
         function toggleElectric() {
-            const travelMode = document.getElementById("travel-mode").value;
-            const extraInput = document.getElementById("extra-input")
+            const travelMode = document.getElementById("travel_mode").value;
+            const extraInput = document.getElementById("extra_input")
             if(travelMode == "car" || travelMode == "bus") {
                 extraInput.classList.remove("hidden")
             } else {
@@ -25,23 +25,20 @@
             <h1 style="text-align: center">Input Personal Usage For Each Category</h1>
         </div>
         <div class="content box" id="travel" style="text-align: left">
-            <form>
+            <form action="/log" method="POST">
                 <h2 style="color: #343a40">Travel Data</h2>
                 <div>
-                    <label for="travel-mode">Travel Mode</label>
-                    <select id="travel-mode" name="travel-mode" onchange="toggleElectric()">
+                    <label for="travel_mode">Travel Mode</label>
+                    <select id="travel_mode" name="travel_mode" onchange="toggleElectric()">
                         <option value="" selected disabled>Select</option>
                         <option value="car">Car</option>
                         <option value="bus">Bus</option>
                         <option value="train">Train</option>
                         <option value="airplane">Airplane</option>
                     </select>
-                    <div id="extra-input" class="hidden">
-                        <label for="electric">Engine Type</label>
-                        <select id="electric" name="electric">
-                            <option value="gas">Gas</option>
-                            <option value="electric">Electric</option>
-                        </select>
+                    <div id="extra_input" class="hidden">
+                        <label for="passengers">Passengers</label>
+                        <input type="text" id="passengers" name="passengers">
                     </div>
                 </div>
                 <div>
@@ -49,8 +46,8 @@
                     <input type="text" id="miles" name="miles"> 
                 </div>
                 <div>
-                    <label for="travel-date">Travel Date</label>
-                    <input type="date" id="travel-date" name="travel-date">
+                    <label for="travel_date">Travel Date</label>
+                    <input type="date" id="travel_date" name="travel_date">
                 </div>
                 <button type = "submit" class = "btn btn-outline-primary">Submit</button>
             </form>
