@@ -21,7 +21,7 @@ a:hover{
 }
 
 a:active{
-    color: #485a00;
+    color: #198754;
     text-decoration: none;
 }
 
@@ -38,7 +38,7 @@ hr{
 /* navbar --------------------------------------- */
 .navbar{
     background-color: #cff17a !important;
-    border-bottom: 1px solid #485a00;
+    border: 1px solid #198754;
 }
 
 /* boxes --------------------------------------- */
@@ -48,6 +48,15 @@ hr{
     color: #343a40;
     border-radius: 5px;
     padding: 1rem;
+}
+
+/* tables --------------------------------------- */
+.td-vertical-center{
+    vertical-align: middle;
+}
+
+.td-horizontal-center{
+    text-align: center;
 }
 
 /* buttons --------------------------------------- */
@@ -76,6 +85,7 @@ hr{
 }
 
 /* page specific --------------------------------------- */
+/* login/register --------------------------------------- */
 .credential-form{
     width: 50%;
     display: grid;
@@ -92,4 +102,26 @@ hr{
 
 .log-reg-img{
     width: 100%;
+}
+
+/* search --------------------------------------- */
+
+.search-table{
+    margin-top: 3rem;
+}
+
+.search-icon-img{
+    width: 75%;
+}
+
+.search-icon{
+    width: 10%;
+}
+
+.search-user{
+    width: 85%;
+}
+
+.search-score{
+    width: 5%
 }

@@ -1,0 +1,36 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/navbar') %>
+<main class = "content">
+    <form class="d-flex" role="search" action = "/search" method = "POST">
+        <input class="form-control me-2" type="search" placeholder="Search users" aria-label="Search" name = "search" id  = "search">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+    <% if(locals.results){ %>
+        <table class = "table table-striped search-table">
+            <colgroup>
+                <col class = "search-icon" span = "1">
+                <col class = "search-user" span = "1">
+                <col class = "search-score" span = "1">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope = "col"></th>
+                    <th scope = "col">Username</th>
+                    <th scope = "col">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% results.forEach(function(result){ %>
+                    <tr scope = "row">
+                        <td class = "td-vertical-center td-horizontal-center"><img class = "icon search-icon-img" src = "img/profile_icon.png"></td>
+                        <td class = "td-vertical-center"><%= result.username %></td>
+                        <td class = "td-vertical-center td-horizontal-center"><%= result.user_carbonscore %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% }else{ %>
+        <div>No users found.</div>
+    <% } %>
+</main>
+<%- include ('../partials/footer') %>

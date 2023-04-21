@@ -63,7 +63,7 @@ app.use(
 // *****************************************************
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
 // GLOBAL VARIABLES
-let username = '';
+let USERNAME = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
@@ -110,7 +110,7 @@ app.post('/login', (req,res)=>{
       if(match){
         console.log('user found and passwords matched; redirecting to home; user:', req.body.username);
 
-        username = req.body.username; // for later use
+        USERNAME = req.body.username; // for later use
         req.session.user = data[0];
         req.session.save();
   
@@ -167,12 +167,32 @@ app.post('/register', async(req,res)=>{
   })
 })
 
-app.get('/logout', (req, res) => {
-  // Destroys the session.
-  req.session.destroy();
-  res.render("pages/login");
+// search routines --------------------------------------------------
+app.get('/search', (req,res) =>{
+  res.render('pages/search.ejs');
 });
 
+app.post('/search', (req,res) =>{
+  const query = `SELECT username, user_carbonscore FROM users WHERE (username LIKE '%' || '${req.body.search}' || '%');`;
+  console.log('QUERY:::::', query);
+  db.any(query)
+    .then(async data=>{
+      if(Object.keys(data).length != 0){
+        console.log(data);
+        res.render('pages/search.ejs', {results: data});
+      }else{
+        // set this to be an error
+        console.log("NOT FOUND")
+        res.render('pages/search.ejs');
+      }
+    })
+    .catch(err=>{
+      console.log('error:::', err);
+    })
+});
+
+// !!!! IMPORTANT: THROW EVERYTHING REQUIRING USER AUTHETNTICATION UNDER HERE ------------------------------
+// anything above this does not require user login
 // everything after here requires user to be logged in
 // Authentication Middleware.
 const auth = (req, res, next) => {
@@ -215,6 +235,15 @@ app.get('/user_trips', (req, res) => {
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
   res.render('pages/log.ejs');
+});
+
+
+// logout routines --------------------------------------------------
+app.get('/logout', (req, res) => {
+  // Destroys the session.
+  req.session.destroy();
+  res.render("pages/login");
+  USERNAME = '';
 });
 
 // *****************************************************
