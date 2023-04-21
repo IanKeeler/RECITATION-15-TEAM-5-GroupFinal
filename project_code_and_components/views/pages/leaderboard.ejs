@@ -2,19 +2,19 @@
 <%- include ('../partials/navbar') %>
 <main>
     <div class="container">
-    <h3>Freight Emissions Leaderboard</h3>
+    <h3>Emissions Leaderboard</h3>
       <table class="table">
         <thead>
           <tr>
             <th scope="col">USERNAME</th>
-            <th scope="col">EMISSIONS</th>
+            <th scope="col">CARBON SCORE</th>
           </tr>
         </thead>
         <tbody>
-            <% f_leaders.forEach(function(leader) { %>
+            <% leaders.forEach(function(leader) { %>
               <tr>
                 <td><%= leader.username %></td>
-                <td><%= leader.total_emissions %></td>
+                <td><%= leader.user_carbonscore %></td>
               </tr>
             <% }); %>
         </tbody>

@@ -63,7 +63,7 @@ app.use(
 // *****************************************************
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
 // GLOBAL VARIABLES
-let username = '';
+let USERNAME = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
@@ -110,7 +110,7 @@ app.post('/login', (req,res)=>{
       if(match){
         console.log('user found and passwords matched; redirecting to home; user:', req.body.username);
 
-        username = req.body.username; // for later use
+        USERNAME = req.body.username; // for later use
         req.session.user = data[0];
         req.session.save();
   
@@ -173,7 +173,7 @@ app.get('/search', (req,res) =>{
 });
 
 app.post('/search', (req,res) =>{
-  const query = `SELECT username FROM users WHERE (username LIKE '%' || '${req.body.search}' || '%');`;
+  const query = `SELECT username, user_carbonscore FROM users WHERE (username LIKE '%' || '${req.body.search}' || '%');`;
   console.log('QUERY:::::', query);
   db.any(query)
     .then(async data=>{
@@ -212,40 +212,38 @@ app.get('/home', (req,res) => {
 });
 
 // leaderboard routines -------------------------------------------
-
-const t_leaderboard_all = 'SELECT u.username, SUM(t.emissions) AS total_emissions FROM users u INNER JOIN travel t ON u.user_id = t.user_id GROUP BY u.user_id ORDER BY total_emissions;';
-app.get('/t_leaderboard', (req, res) => {
-  db.any(t_leaderboard_all)
-    .then((t_leaders) => {
-      res.render('pages/t_leaderboard.ejs', {
-        t_leaders,
+const leaderboard_all = 'SELECT username, user_carbonscore FROM users ORDER BY user_carbonscore;';
+app.get('/leaderboard', (req, res) => {
+  db.any(leaderboard_all)
+    .then((leaders) => {
+      res.render('pages/leaderboard.ejs', {
+        leaders,
       });
     });
 });
 
-const f_leaderboard_all = 'SELECT u.username, SUM(f.emissions) AS total_emissions FROM users u INNER JOIN freight f ON u.user_id = f.user_id GROUP BY u.user_id ORDER BY total_emissions;';
-app.get('/f_leaderboard', (req, res) => {
-  db.any(f_leaderboard_all)
-    .then((f_leaders) => {
-      res.render('pages/f_leaderboard.ejs', {
-        f_leaders,
-      });
-    });
-});
-
-const e_leaderboard_all = 'SELECT u.username, SUM(e.emissions) AS total_emissions FROM users u INNER JOIN electricity e ON u.user_id = e.user_id GROUP BY u.user_id ORDER BY total_emissions;';
-app.get('/e_leaderboard', (req, res) => {
-  db.any(e_leaderboard_all)
-    .then((e_leaders) => {
-      res.render('pages/e_leaderboard.ejs', {
-        e_leaders,
-      });
-    });
-});
+// user profile data routines ------------------------------------
+// TODO~~~~
+const recent_trips = 'SELECT travel_mode, travel_distance, emissions, date FROM travel WHERE user_id = TODO;';
+app.get('/user_trips', (req, res) => {
+  db.any(recent_trips)
+    .then((user_trip) => {
+      res.render('pages/')
+    })
+})
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
   res.render('pages/log.ejs');
+});
+
+
+// logout routines --------------------------------------------------
+app.get('/logout', (req, res) => {
+  // Destroys the session.
+  req.session.destroy();
+  res.render("pages/login");
+  USERNAME = '';
 });
 
 // *****************************************************
