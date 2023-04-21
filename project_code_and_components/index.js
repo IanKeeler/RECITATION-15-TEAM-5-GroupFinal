@@ -241,6 +241,7 @@ app.get('/log', (req,res) => {
 // logout routines --------------------------------------------------
 app.get('/logout', (req, res) => {
   // Destroys the session.
+  console.log('session destroyed.')
   req.session.destroy();
   res.render("pages/login");
   USERNAME = '';
