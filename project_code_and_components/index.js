@@ -167,6 +167,32 @@ app.post('/register', async(req,res)=>{
   })
 })
 
+// search routines --------------------------------------------------
+app.get('/search', (req,res) =>{
+  res.render('pages/search.ejs');
+});
+
+app.post('/search', (req,res) =>{
+  const query = `SELECT username FROM users WHERE (username LIKE '%' || '${req.body.search}' || '%');`;
+  console.log('QUERY:::::', query);
+  db.any(query)
+    .then(async data=>{
+      if(Object.keys(data).length != 0){
+        console.log(data);
+        res.render('pages/search.ejs', {results: data});
+      }else{
+        // set this to be an error
+        console.log("NOT FOUND")
+        res.render('pages/search.ejs');
+      }
+    })
+    .catch(err=>{
+      console.log('error:::', err);
+    })
+});
+
+// !!!! IMPORTANT: THROW EVERYTHING REQUIRING USER AUTHETNTICATION UNDER HERE ------------------------------
+// anything above this does not require user login
 // everything after here requires user to be logged in
 // Authentication Middleware.
 const auth = (req, res, next) => {
