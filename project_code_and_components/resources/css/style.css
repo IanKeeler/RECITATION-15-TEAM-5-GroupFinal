@@ -84,7 +84,12 @@ hr{
     border-radius: 50%;
 }
 
+.navbar-icon{
+    width: 30px;
+}
+
 /* page specific --------------------------------------- */
+
 /* login/register --------------------------------------- */
 .credential-form{
     width: 50%;
@@ -124,4 +129,25 @@ hr{
 
 .search-score{
     width: 5%
+}
+
+/* profile --------------------------------------- */
+.profile-box{
+    padding-left: 75px;
+    padding-right: 75px;
+}
+
+.profile-header{
+    display: grid;
+    grid-template-columns: 0.15fr 0.85fr;
+    column-gap: 4rem;
+    width: 100%;
+}
+
+.profile-icon{
+    width: 100%
+}
+
+.profile-label{
+    padding: 50px 0 50px;
 }

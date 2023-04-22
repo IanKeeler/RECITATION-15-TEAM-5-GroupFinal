@@ -21,7 +21,16 @@
                     </form>
                 </li>
             </ul>
-            <a class="nav-link" enableRtl=true href="/logout">Logout</a>
+            <!-- left aligned portion here -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                    <img class = "navbar-icon icon" src = "img/profile_icon.png">
+                </button>
+                <ul class="dropdown-menu dropdown-menu-lg-end">
+                    <li><a class="dropdown-item" href="/profile?user=---self">Profile</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
