@@ -23,7 +23,7 @@
                 <% results.forEach(function(result){ %>
                     <tr scope = "row">
                         <td class = "td-vertical-center td-horizontal-center"><img class = "icon search-icon-img" src = "img/profile_icon.png"></td>
-                        <td class = "td-vertical-center"><%= result.username %></td>
+                        <td class = "td-vertical-center"><a href = "/profile?user=<%= result.username %>" class = "search-link"> <%= result.username %> </a></td>
                         <td class = "td-vertical-center td-horizontal-center"><%= result.user_carbonscore %></td>
                     </tr>
                 <% }) %>

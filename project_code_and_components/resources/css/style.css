@@ -131,6 +131,11 @@ hr{
     width: 5%
 }
 
+.search-link{
+    color: #198754;
+    text-decoration: none;
+}
+
 /* profile --------------------------------------- */
 .profile-box{
     padding-left: 75px;
