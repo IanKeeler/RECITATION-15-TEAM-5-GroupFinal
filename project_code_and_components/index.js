@@ -145,14 +145,17 @@ app.post('/register', async(req,res)=>{
   // add to user table
   const passwordHash = await bcrypt.hash(req.body.password, 10);
 
-  // carbon score ?????
+  // default carbonscore/weight factor
   let carbonScore = 50;
+  let weightFactor = 1
 
   // insert into db
-  let query = 'INSERT INTO users (username, user_password) VALUES ($1, $2) RETURNING *;';
+  let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ($1, $2, $3, $4) RETURNING *;';
   db.any(query, [
     req.body.username,
-    passwordHash
+    passwordHash,
+    weightFactor,
+    carbonScore
   ])
   .then(function(data){
     console.log('data::::', data);
