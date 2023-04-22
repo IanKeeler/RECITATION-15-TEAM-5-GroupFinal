@@ -1,0 +1,14 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/navbar') %>
+<main class = "content profile-box">
+    <div class = "profile-header">
+        <img class = "profile-icon icon" src = "img/profile_icon.png">
+        <div class = "profile-label">
+            <h1><%= user.username %></h1>
+            <div>Score: <%= user.user_carbonscore %></div>
+        </div>
+    </div>
+    <hr>
+    <!-- include profile data here once functional -->
+</main>
+<%- include ('../partials/footer') %>
