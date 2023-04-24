@@ -1,23 +1,23 @@
-<div class="container">
 <h3>Recent Activity</h3>
-    <table class="table">
+<% if(locals.userTrip){ %>
+    <table class = "table table-striped">
         <thead>
             <tr>
-                <th scope="col">MODE OF TRAVEL</th>
-                <th scope="col">MILES TRAVELLED</th>
-                <th scope="col">EMISSIONS</th>
-                <th scope="col">DATE</th>
+                <th scope = "col">Mode</th>
+                <th scope = "col">Miles</th>
+                <th scope = "col">Emissions (kg)</th>
+                <th scope = "col">Date</th>
             </tr>
         </thead>
         <tbody>
-            <% user_trip.forEach(function(trip) { %>
-                <tr>
-                  <td><%= trip.travel_mode %></td>
-                  <td><%= trip.travel_distance %></td>
-                  <td><%= trip.emissions %></td>
-                  <td><%= trip.date %></td>
+            <% userTrip.forEach(function(trip){ %>
+                <tr scope = "row">
+                    <td class = "td-vertical-center"><%= trip.travel_mode %></td>
+                    <td class = "td-vertical-center"><%= trip.travel_distance %></td>
+                    <td class = "td-vertical-center"><%= trip.emissions %></td>
+                    <td class = "td-vertical-center"><%= trip.date %></td>
                 </tr>
-            <% }); %>
+            <% }) %>
         </tbody>
     </table>
-</div>
+<% } %>

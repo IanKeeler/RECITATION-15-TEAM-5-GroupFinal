@@ -235,6 +235,40 @@ app.get('/user_trips', (req, res) => {
     })
 })
 
+app.get('/my-profile', (req, res) =>{
+  let reroute = '/profile?user=' + USERNAME;
+  console.log(reroute);
+  res.redirect(reroute);
+});
+
+// res.render('pages/login.ejs', {message: err});
+app.get('/profile', (req,res) =>{
+  let query = `SELECT user_id, username, user_carbonscore FROM users WHERE username = '${req.query.user}';`;
+
+  db.task('get-everything', task=>{
+    return task.batch([task.any(query)]);
+  })
+  .then(data =>{
+    console.log('profile for user::::', data);
+    let user = data[0][0];
+    console.log('user::::', user);
+    console.log('user id::::', user.user_id);
+
+    let fetchTravelData = `SELECT * FROM travel WHERE user_id = ${user.user_id}`;
+    db.task('get-everything', task=>{
+      return task.batch([task.any(fetchTravelData)]);
+    })
+    .then(data=>{
+      let trips = data[0];
+      console.log(trips);
+      res.render('pages/profile.ejs', {user: user, userTrip: trips});
+    })
+  })
+  .catch(err =>{
+    console.log(err);
+  })
+});
+
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
   res.render('pages/log.ejs');
