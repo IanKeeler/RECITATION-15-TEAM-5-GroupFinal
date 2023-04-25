@@ -290,7 +290,7 @@ app.post('/log', (req, res) => {
     method: 'POST',
     dataType: 'json',
     headers: {
-      'Authorization': 'Bearer 2NETAQ30MA49W3HN99VP6SCZT6DC',
+      'Authorization': 'Bearer ' +  process.env.API_KEY,
     },
     data: {
       emission_factor: {
