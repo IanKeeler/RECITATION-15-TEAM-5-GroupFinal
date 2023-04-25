@@ -202,7 +202,7 @@ const auth = (req, res, next) => {
   if (!req.session.user) {
     // Default to login page.
     return res.redirect('/login');
-  }
+  } 
   next();
 };
 
@@ -274,9 +274,66 @@ app.get('/profile', (req,res) =>{
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
-  res.render('pages/log.ejs');
+  res.render('pages/log', { APIresults: null});
 });
 
+app.post('/log', (req, res) => {
+
+  // Dictionary that contains all different activity API calls for different travel modes
+  emissionActivityId = {
+    "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
+    "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
+    "bus": 'passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na',
+    "train": 'passenger_train-route_type_commuter_rail-fuel_source_na'
+  }
+
+  // Travel API call
+  axios({
+    url: 'https://beta3.api.climatiq.io/estimate',
+    method: 'POST',
+    dataType: 'json',
+    headers: {
+      'Authorization': 'Bearer ' +  process.env.API_KEY,
+    },
+    data: {
+      emission_factor: {
+        'activity_id': emissionActivityId[req.body.travel_mode],
+      },
+      parameters: {
+        'passengers': 1,
+        'distance': parseInt(req.body.distance),
+        'distance_unit': "mi"
+      },
+    },
+  })
+    .then(results => {
+      const getUserID = "SELECT user_id FROM users WHERE username = $1";
+      const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
+
+      // First, get the user_id
+      db.one(getUserID, [USERNAME])
+        .then(user => {
+          // Now use the user_id to insert into the travel table
+          db.none(travelQuery, [req.body.travel_mode, req.body.distance, results.data.co2e, req.body.travel_date, user.user_id])
+            .then(() => {
+              const APIresults = {
+                co2e: results.data.co2e,
+                units: results.data.co2e_unit
+              }
+              res.render('pages/log', {APIresults});
+            })
+            .catch(err => {
+              console.log("There was an error entering data into the travel table", err);
+            });
+        })
+        .catch(err => {
+          console.log("There was an error fetching the user_id", err);
+        });   
+    })
+    .catch(error => {
+      res.render('pages/log', {result: [], message: "The API call has failed."});
+    });
+});
 
 // logout routines --------------------------------------------------
 app.get('/logout', (req, res) => {
