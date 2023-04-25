@@ -271,7 +271,7 @@ app.get('/profile', (req,res) =>{
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
-  res.render('pages/log.ejs');
+  res.render('pages/log', { APIresults: null});
 });
 
 app.post('/log', (req, res) => {
@@ -304,26 +304,20 @@ app.post('/log', (req, res) => {
     },
   })
     .then(results => {
-      console.log(results.data); 
-
-      // // Inserts the input data from the travel log into the travel table
-      // const getUserID = "SELECT user_id FROM users WHERE username = $1"
-      // const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
-      // db.none(travelQuery, [req.body.travel_mode, req.body.distance, results.data.co2e, req.body.travel_date, req.body.username])
-      // .catch(err => {
-      //   console.log("There was an error entering data into table", err);
-      // });
-
       const getUserID = "SELECT user_id FROM users WHERE username = $1";
       const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
 
       // First, get the user_id
-      db.one(getUserID, [req.session.username])
+      db.one(getUserID, [USERNAME])
         .then(user => {
           // Now use the user_id to insert into the travel table
           db.none(travelQuery, [req.body.travel_mode, req.body.distance, results.data.co2e, req.body.travel_date, user.user_id])
             .then(() => {
-              console.log("Data inserted successfully");
+              const APIresults = {
+                co2e: results.data.co2e,
+                units: results.data.co2e_unit
+              }
+              res.render('pages/log', {APIresults});
             })
             .catch(err => {
               console.log("There was an error entering data into the travel table", err);

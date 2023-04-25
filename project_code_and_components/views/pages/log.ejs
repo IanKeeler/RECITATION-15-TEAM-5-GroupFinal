@@ -52,6 +52,12 @@
                 <button type = "submit" class = "btn btn-outline-primary">Submit</button>
             </form>
         </div>
+        <div class="content box" id="travel_results" style="<% if (!APIresults) { %> display: none;<% } %>">
+            <h2 style="color: #343a40">Emission Results</h2>
+            <div id="co2_data">
+                CO2: <%= APIresults ? APIresults.co2e + " "  + APIresults.units : "" %>
+            </div>
+        </div>
     </main>
 </body>
 <%- include ('../partials/footer') %>
