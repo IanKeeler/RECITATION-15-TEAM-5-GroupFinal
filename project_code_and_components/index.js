@@ -255,13 +255,16 @@ app.get('/profile', (req,res) =>{
     console.log('user id::::', user.user_id);
 
     let fetchTravelData = `SELECT * FROM travel WHERE user_id = ${user.user_id}`;
+    let fetchEmissionTotal = `SELECT SUM(emissions) AS total_emissions FROM travel WHERE user_id = ${user.user_id};`;
     db.task('get-everything', task=>{
-      return task.batch([task.any(fetchTravelData)]);
+      return task.batch([task.any(fetchTravelData),task.any(fetchEmissionTotal)]);
     })
     .then(data=>{
       let trips = data[0];
+      let total = data[1];
       console.log(trips);
-      res.render('pages/profile.ejs', {user: user, userTrip: trips});
+      console.log(total);
+      res.render('pages/profile.ejs', {user: user, userTrip: trips, emissionTotal: total});
     })
   })
   .catch(err =>{
