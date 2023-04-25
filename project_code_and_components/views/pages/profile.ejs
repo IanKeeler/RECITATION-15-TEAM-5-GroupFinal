@@ -6,6 +6,9 @@
         <div class = "profile-label">
             <h1><%= user.username %></h1>
             <div>Score: <%= user.user_carbonscore %></div>
+            <% emissionTotal.forEach(function(total){ %>
+                <div>Lifetime Emissions: <%= total.total_emissions %></div>
+            <% }) %>
         </div>
     </div>
     <hr>
