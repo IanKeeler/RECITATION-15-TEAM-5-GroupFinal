@@ -1,0 +1,23 @@
+<h3>Recent Activity</h3>
+<% if(locals.userTrip){ %>
+    <table class = "table table-striped">
+        <thead>
+            <tr>
+                <th scope = "col">Mode</th>
+                <th scope = "col">Miles</th>
+                <th scope = "col">Emissions (kg)</th>
+                <th scope = "col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% userTrip.forEach(function(trip){ %>
+                <tr scope = "row">
+                    <td class = "td-vertical-center"><%= trip.travel_mode %></td>
+                    <td class = "td-vertical-center"><%= trip.travel_distance %></td>
+                    <td class = "td-vertical-center"><%= trip.emissions %></td>
+                    <td class = "td-vertical-center"><%= trip.date %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>

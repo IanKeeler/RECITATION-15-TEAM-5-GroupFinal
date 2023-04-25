@@ -63,7 +63,7 @@ app.use(
 // *****************************************************
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
 // GLOBAL VARIABLES
-let username = '';
+let USERNAME = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
@@ -110,7 +110,7 @@ app.post('/login', (req,res)=>{
       if(match){
         console.log('user found and passwords matched; redirecting to home; user:', req.body.username);
 
-        username = req.body.username; // for later use
+        USERNAME = req.body.username; // for later use
         req.session.user = data[0];
         req.session.save();
   
@@ -145,14 +145,17 @@ app.post('/register', async(req,res)=>{
   // add to user table
   const passwordHash = await bcrypt.hash(req.body.password, 10);
 
-  // carbon score ?????
+  // default carbonscore/weight factor
   let carbonScore = 50;
+  let weightFactor = 1
 
   // insert into db
-  let query = 'INSERT INTO users (username, user_password) VALUES ($1, $2) RETURNING *;';
+  let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ($1, $2, $3, $4) RETURNING *;';
   db.any(query, [
     req.body.username,
-    passwordHash
+    passwordHash,
+    weightFactor,
+    carbonScore
   ])
   .then(function(data){
     console.log('data::::', data);
@@ -167,6 +170,32 @@ app.post('/register', async(req,res)=>{
   })
 })
 
+// search routines --------------------------------------------------
+app.get('/search', (req,res) =>{
+  res.render('pages/search.ejs');
+});
+
+app.post('/search', (req,res) =>{
+  const query = `SELECT username, user_carbonscore FROM users WHERE (username LIKE '%' || '${req.body.search}' || '%');`;
+  console.log('QUERY:::::', query);
+  db.any(query)
+    .then(async data=>{
+      if(Object.keys(data).length != 0){
+        console.log(data);
+        res.render('pages/search.ejs', {results: data});
+      }else{
+        // set this to be an error
+        console.log("NOT FOUND")
+        res.render('pages/search.ejs');
+      }
+    })
+    .catch(err=>{
+      console.log('error:::', err);
+    })
+});
+
+// !!!! IMPORTANT: THROW EVERYTHING REQUIRING USER AUTHETNTICATION UNDER HERE ------------------------------
+// anything above this does not require user login
 // everything after here requires user to be logged in
 // Authentication Middleware.
 const auth = (req, res, next) => {
@@ -186,7 +215,6 @@ app.get('/home', (req,res) => {
 });
 
 // leaderboard routines -------------------------------------------
-
 const leaderboard_all = 'SELECT username, user_carbonscore FROM users ORDER BY user_carbonscore;';
 app.get('/leaderboard', (req, res) => {
   db.any(leaderboard_all)
@@ -195,6 +223,50 @@ app.get('/leaderboard', (req, res) => {
         leaders,
       });
     });
+});
+
+// user profile data routines ------------------------------------
+// TODO~~~~
+const recent_trips = 'SELECT travel_mode, travel_distance, emissions, date FROM travel WHERE user_id = TODO;';
+app.get('/user_trips', (req, res) => {
+  db.any(recent_trips)
+    .then((user_trip) => {
+      res.render('pages/')
+    })
+})
+
+app.get('/my-profile', (req, res) =>{
+  let reroute = '/profile?user=' + USERNAME;
+  console.log(reroute);
+  res.redirect(reroute);
+});
+
+// res.render('pages/login.ejs', {message: err});
+app.get('/profile', (req,res) =>{
+  let query = `SELECT user_id, username, user_carbonscore FROM users WHERE username = '${req.query.user}';`;
+
+  db.task('get-everything', task=>{
+    return task.batch([task.any(query)]);
+  })
+  .then(data =>{
+    console.log('profile for user::::', data);
+    let user = data[0][0];
+    console.log('user::::', user);
+    console.log('user id::::', user.user_id);
+
+    let fetchTravelData = `SELECT * FROM travel WHERE user_id = ${user.user_id}`;
+    db.task('get-everything', task=>{
+      return task.batch([task.any(fetchTravelData)]);
+    })
+    .then(data=>{
+      let trips = data[0];
+      console.log(trips);
+      res.render('pages/profile.ejs', {user: user, userTrip: trips});
+    })
+  })
+  .catch(err =>{
+    console.log(err);
+  })
 });
 
 // log routines --------------------------------------------------
@@ -266,9 +338,14 @@ app.post('/log', (req, res) => {
     });
 });
 
-
-
-
+// logout routines --------------------------------------------------
+app.get('/logout', (req, res) => {
+  // Destroys the session.
+  console.log('session destroyed.')
+  req.session.destroy();
+  res.render("pages/login");
+  USERNAME = '';
+});
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
