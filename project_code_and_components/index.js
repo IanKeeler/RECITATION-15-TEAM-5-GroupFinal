@@ -215,7 +215,8 @@ app.get('/home', (req,res) => {
 });
 
 // leaderboard routines -------------------------------------------
-const leaderboard_all = 'SELECT username, user_carbonscore FROM users ORDER BY user_carbonscore;';
+//const leaderboard_all = 'SELECT username, user_carbonscore FROM users ORDER BY user_carbonscore;';
+const leaderboard_all = 'SELECT row_number() OVER(ORDER BY user_carbonscore), username, user_carbonscore FROM users;';
 app.get('/leaderboard', (req, res) => {
   db.any(leaderboard_all)
     .then((leaders) => {
