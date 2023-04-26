@@ -1,0 +1,26 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/navbar') %>
+<main>
+    <div class="container">
+    <h3>Emissions Leaderboard</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="text-align: center" scope="col">RANK</th>
+            <th style="text-align: center" scope="col">USERNAME</th>
+            <th style="text-align: center" scope="col">CARBON SCORE</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% leaders.forEach(function(leader) { %>
+              <tr>
+                <td style="text-align: center"><%= leader.row_number %></td>
+                <td style="text-align: center"><%= leader.username %></td>
+                <td style="text-align: center"><%= leader.user_carbonscore %></td>
+              </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    </div>
+</main>
+<%- include ('../partials/footer') %>

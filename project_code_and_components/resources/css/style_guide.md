@@ -14,6 +14,7 @@ This document contains information on the following:
 - Colored boxes
 - Buttons
 - Images for use of icons
+- Tables
 
 It isn't necessary to read the entire thing to parse a section.
 
@@ -57,7 +58,7 @@ Note: Hex codes do not include alpha (transparency) channels code and by default
 - #e9eaec
 - #cff17a
 - #a4cb03
-- #485a00
+- #198754
 - #6c757d
 - #343a40
 
@@ -108,3 +109,13 @@ Class "icon" puts an image into a circular frame.
 The class does not alter image size, so the size of the full image will by default be whatever the size of source image is, unless affected by additional styling.
 
 Currently, the class does not force images that aren't square to be in circular (square) frames; images must be in square aspect ratios to appear as a circle (will be elliptical otherwise).
+
+## Tables
+
+Class "td-vertical-center" aligns text in a table cell vertically to center.
+
+Class "td-horizontal-center" aligns text in a table cell horizontally to center.
+
+    <td class = "td-vertical-center"></td>
+
+    <td class = "td-horizontal-center"></td>

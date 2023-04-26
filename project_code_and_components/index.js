@@ -62,10 +62,8 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
-// route styling
-// app.get('/style', (req,res)=>{
-//   res.send('../../resources/css/style.css');
-// });
+// GLOBAL VARIABLES
+let USERNAME = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
@@ -92,10 +90,8 @@ app.get('/login', (req,res)=>{
 });
 
 app.post('/login', (req,res)=>{
-  // actual database query
-  // const person = `SELECT * FROM user WHERE userName = '${req.body.username}';`;
 
-  // test db query SWAP FOR ACTUAL
+  // ACTUAL db query
   const person = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   
   db.any(person)
@@ -112,7 +108,9 @@ app.post('/login', (req,res)=>{
       console.log('password check match::::', match);
       // create user session if match
       if(match){
-        console.log('user found and passwords matched; redirecting to home');
+        console.log('user found and passwords matched; redirecting to home; user:', req.body.username);
+
+        USERNAME = req.body.username; // for later use
         req.session.user = data[0];
         req.session.save();
   
@@ -147,14 +145,18 @@ app.post('/register', async(req,res)=>{
   // add to user table
   const passwordHash = await bcrypt.hash(req.body.password, 10);
 
-  // carbon score ?????
+  // default carbonscore/weight factor
   let carbonScore = 50;
+  let weightFactor = 1;
 
   // insert into db
-  let query = 'INSERT INTO users (username, user_password) VALUES ($1, $2) RETURNING *;';
+  let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
   db.any(query, [
     req.body.username,
-    passwordHash
+    passwordHash,
+    weightFactor,
+    carbonScore,
+    ''
   ])
   .then(function(data){
     console.log('data::::', data);
@@ -169,79 +171,237 @@ app.post('/register', async(req,res)=>{
   })
 })
 
-// home routines --------------------------------------------------
+// search routines --------------------------------------------------
+app.get('/search', (req,res) =>{
+  res.render('pages/search.ejs');
+});
 
-const user = {
-  username: undefined,
+app.post('/search', (req,res) =>{
+  const query = `SELECT username, user_carbonscore FROM users WHERE (username LIKE '%' || '${req.body.search}' || '%');`;
+  console.log('QUERY:::::', query);
+  db.any(query)
+    .then(async data=>{
+      if(Object.keys(data).length != 0){
+        console.log(data);
+        res.render('pages/search.ejs', {results: data});
+      }else{
+        // set this to be an error
+        console.log("NOT FOUND")
+        res.render('pages/search.ejs');
+      }
+    })
+    .catch(err=>{
+      console.log('error:::', err);
+    })
+});
+
+// !!!! IMPORTANT: THROW EVERYTHING REQUIRING USER AUTHETNTICATION UNDER HERE ------------------------------
+// anything above this does not require user login
+// everything after here requires user to be logged in
+// Authentication Middleware.
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    // Default to login page.
+    return res.redirect('/login');
+  } 
+  next();
 };
+
+// Authentication Required
+app.use(auth); 
+
 // TIPS ARRAY: change strings in these to represent tips that someone can recieve
 // NO OTHER code manipulation necessary to access tips
 const tips = [
-'Reduce your energy consumption by turning off lights and unplugging electronics when not in use.',
-'Use public transportation or carpool instead of driving alone.',
-'Switch to energy-efficient light bulbs.',
-'Buy products made from sustainable materials.',
-'Plant trees or support reforestation efforts.',
-'Reduce meat consumption, as livestock farming is a significant source of greenhouse gas emissions.',
-'Use reusable bags, water bottles, and containers instead of single-use plastic items.',
-'Buy locally grown and produced foods to reduce transportation emissions.',
-'Reduce water consumption by taking shorter showers and fixing leaks.',
-'Use a programmable thermostat to regulate heating and cooling.',
-'Choose products with minimal packaging to reduce waste.',
-'Use renewable energy sources like solar or wind power.',
-'Insulate your home to reduce heating and cooling needs.',
-'Support companies and politicians who prioritize environmental protection.',
-'Educate yourself and others about climate change and ways to reduce your carbon footprint.'
-];
-
-// call this function to generate tips
-async function getTip(){
-  let i = Math.floor(Math.random() * tips.length);
-  return tips[i];
-}
-
-app.get('/home', async(req,res) => {
-  // get tip to render on page
-  let tip = await getTip();
-
-  res.render('pages/home', {tip: tip});
-});
+  'Reduce your energy consumption by turning off lights and unplugging electronics when not in use.',
+  'Use public transportation or carpool instead of driving alone.',
+  'Switch to energy-efficient light bulbs.',
+  'Buy products made from sustainable materials.',
+  'Plant trees or support reforestation efforts.',
+  'Reduce meat consumption, as livestock farming is a significant source of greenhouse gas emissions.',
+  'Use reusable bags, water bottles, and containers instead of single-use plastic items.',
+  'Buy locally grown and produced foods to reduce transportation emissions.',
+  'Reduce water consumption by taking shorter showers and fixing leaks.',
+  'Use a programmable thermostat to regulate heating and cooling.',
+  'Choose products with minimal packaging to reduce waste.',
+  'Use renewable energy sources like solar or wind power.',
+  'Insulate your home to reduce heating and cooling needs.',
+  'Support companies and politicians who prioritize environmental protection.',
+  'Educate yourself and others about climate change and ways to reduce your carbon footprint.'
+  ];
+  
+  // call this function to generate tips
+  async function getTip(){
+    let i = Math.floor(Math.random() * tips.length);
+    return tips[i];
+  }
+  
+  app.get('/home', async(req,res) => {
+    // get tip to render on page
+    let tip = await getTip();
+  
+    res.render('pages/home', {tip: tip});
+  });
 
 // leaderboard routines -------------------------------------------
-
-const t_leaderboard_all = 'SELECT u.username, SUM(t.emissions) AS total_emissions FROM users u INNER JOIN travel t ON u.user_id = t.user_id GROUP BY u.user_id ORDER BY total_emissions;';
-app.get('/t_leaderboard', (req, res) => {
-  db.any(t_leaderboard_all)
-    .then((t_leaders) => {
-      res.render('pages/t_leaderboard.ejs', {
-        t_leaders,
+//const leaderboard_all = 'SELECT username, user_carbonscore FROM users ORDER BY user_carbonscore;';
+const leaderboard_all = 'SELECT row_number() OVER(ORDER BY user_carbonscore), username, user_carbonscore FROM users;';
+app.get('/leaderboard', (req, res) => {
+  db.any(leaderboard_all)
+    .then((leaders) => {
+      res.render('pages/leaderboard.ejs', {
+        leaders,
       });
     });
 });
 
-const f_leaderboard_all = 'SELECT u.username, SUM(f.emissions) AS total_emissions FROM users u INNER JOIN freight f ON u.user_id = f.user_id GROUP BY u.user_id ORDER BY total_emissions;';
-app.get('/f_leaderboard', (req, res) => {
-  db.any(f_leaderboard_all)
-    .then((f_leaders) => {
-      res.render('pages/f_leaderboard.ejs', {
-        f_leaders,
-      });
-    });
+// user profile data routines ------------------------------------
+const recent_trips = 'SELECT travel_mode, travel_distance, emissions, date FROM travel WHERE user_id = TODO;';
+app.get('/user_trips', (req, res) => {
+  db.any(recent_trips)
+    .then((user_trip) => {
+      res.render('pages/')
+    })
+})
+
+app.get('/my-profile', (req, res) =>{
+  let reroute = '/profile?user=' + USERNAME;
+  console.log(reroute);
+  res.redirect(reroute);
 });
 
-const e_leaderboard_all = 'SELECT u.username, SUM(e.emissions) AS total_emissions FROM users u INNER JOIN electricity e ON u.user_id = e.user_id GROUP BY u.user_id ORDER BY total_emissions;';
-app.get('/e_leaderboard', (req, res) => {
-  db.any(e_leaderboard_all)
-    .then((e_leaders) => {
-      res.render('pages/e_leaderboard.ejs', {
-        e_leaders,
-      });
+app.get('/profile', (req,res) =>{
+  let query = `SELECT user_id, username, user_carbonscore, user_description FROM users WHERE username = '${req.query.user}';`;
+  
+  // checks to see if this is the logged in user's profile
+  let isUser = false;
+  if(USERNAME === req.query.user){
+    isUser = true;
+  }
+  console.log('::::EDITABLE:', isUser);
+
+  db.task('get-everything', task=>{
+    return task.batch([task.any(query)]);
+  })
+  .then(data =>{
+    console.log('profile for user::::', data);
+    let user = data[0][0];
+    console.log('user::::', user);
+    console.log('user id::::', user.user_id);
+
+    let fetchTravelData = `SELECT * FROM travel WHERE user_id = ${user.user_id}`;
+    let fetchEmissionTotal = `SELECT SUM(emissions) AS total_emissions FROM travel WHERE user_id = ${user.user_id};`;
+    db.task('get-everything', task=>{
+      return task.batch([task.any(fetchTravelData),task.any(fetchEmissionTotal)]);
+    })
+    .then(data=>{
+      let trips = data[0];
+      let total = data[1];
+      console.log(trips);
+      console.log(total);
+      res.render('pages/profile.ejs', {user: user, userTrip: trips, emissionTotal: total, editing: isUser});
+    })
+  })
+  .catch(err =>{
+    console.log(err);
+  })
+});
+
+// prevents ' character from messing with strings
+async function editString(string){
+  string = string.replace(/'/g, '\'\'');
+  console.log('EDITED STRING:::', string);
+
+  return string;
+}
+
+app.post('/edit-description', async(req,res)=>{
+  let description = await editString(req.body.description);
+  console.log('DESCRIPTION::::', description);
+
+  const query = `UPDATE users SET user_description = '${description}' WHERE username = '${USERNAME}' RETURNING *;`;
+  console.log(query);
+  db.any(query)
+    .then(data=>{
+      console.log(data);
+      let reroute = '/profile?user=' + USERNAME;
+      res.redirect(reroute);
+    })
+    .catch(err =>{
+      console.log(err);
     });
 });
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
-  res.render('pages/log.ejs');
+  res.render('pages/log', { APIresults: null});
+});
+
+app.post('/log', (req, res) => {
+
+  // Dictionary that contains all different activity API calls for different travel modes
+  emissionActivityId = {
+    "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
+    "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
+    "bus": 'passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na',
+    "train": 'passenger_train-route_type_commuter_rail-fuel_source_na'
+  }
+
+  // Travel API call
+  axios({
+    url: 'https://beta3.api.climatiq.io/estimate',
+    method: 'POST',
+    dataType: 'json',
+    headers: {
+      'Authorization': 'Bearer ' +  process.env.API_KEY,
+    },
+    data: {
+      emission_factor: {
+        'activity_id': emissionActivityId[req.body.travel_mode],
+      },
+      parameters: {
+        'passengers': 1,
+        'distance': parseInt(req.body.distance),
+        'distance_unit': "mi"
+      },
+    },
+  })
+    .then(results => {
+      const getUserID = "SELECT user_id FROM users WHERE username = $1";
+      const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
+
+      // First, get the user_id
+      db.one(getUserID, [USERNAME])
+        .then(user => {
+          // Now use the user_id to insert into the travel table
+          db.none(travelQuery, [req.body.travel_mode, req.body.distance, results.data.co2e, req.body.travel_date, user.user_id])
+            .then(() => {
+              const APIresults = {
+                co2e: results.data.co2e,
+                units: results.data.co2e_unit
+              }
+              res.render('pages/log', {APIresults});
+            })
+            .catch(err => {
+              console.log("There was an error entering data into the travel table", err);
+            });
+        })
+        .catch(err => {
+          console.log("There was an error fetching the user_id", err);
+        });   
+    })
+    .catch(error => {
+      res.render('pages/log', {result: [], message: "The API call has failed."});
+    });
+});
+
+// logout routines --------------------------------------------------
+app.get('/logout', (req, res) => {
+  // Destroys the session.
+  console.log('session destroyed.')
+  req.session.destroy();
+  res.render("pages/login");
+  USERNAME = '';
 });
 
 // *****************************************************
