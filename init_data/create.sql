@@ -8,6 +8,7 @@ CREATE TABLE users(
   user_password VARCHAR(300) NOT NULL,
   user_weightfactor FLOAT NOT NULL,
   user_carbonscore FLOAT NOT NULL,
+  user_description TEXT,
   CONSTRAINT "username_unique" UNIQUE ("username")
 );
 
@@ -68,9 +69,9 @@ CREATE TABLE electricity(
 -- pass1
 -- pass2
 -- pass3
-INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ('user1', '$2b$10$4KoZfQeiD9MDlI5YRzMZtuBIJbXgjz.QqsZRmDG4NCfsXPSW4APWm', 1, 50);
-INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ('user2', '$2b$10$yPeUvrbER1W.Y/NGiffn8usAZFmltMhFB1BFo15jaBUX2dBcKzK76', 1, 27);
-INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ('user3', '$2b$10$SpdLRI.7Eb7qF94c44nI4eMWqTf75mHGqGTYb8X3FEZR0yAX/fp/6', 1, 16.8);
+INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ('user1', '$2b$10$4KoZfQeiD9MDlI5YRzMZtuBIJbXgjz.QqsZRmDG4NCfsXPSW4APWm', 1, 50, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vehicula augue sed nunc feugiat porta. Donec ut urna diam. Sed dapibus, tortor a lacinia eleifend, est sapien pellentesque ligula, sed ornare nisl est sodales ante. Mauris volutpat consequat diam et feugiat. Curabitur ac velit nisl. Morbi leo ante, ornare ac hendrerit suscipit, aliquam venenatis neque. Proin bibendum posuere metus, eu lacinia lorem vestibulum in. In fringilla urna neque, nec tristique diam vehicula eu. Fusce ultrices tortor viverra, vehicula arcu eget, condimentum arcu. Etiam eget dolor consequat, scelerisque tellus in, scelerisque tellus. Donec dapibus sit amet nibh a vulputate. Sed dapibus, leo ac accumsan semper, lorem elit efficitur tellus, id condimentum eros neque eu est. ');
+INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ('user2', '$2b$10$yPeUvrbER1W.Y/NGiffn8usAZFmltMhFB1BFo15jaBUX2dBcKzK76', 1, 27, 'my name is user2 and i am allergic to bees but only some of them');
+INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ('user3', '$2b$10$SpdLRI.7Eb7qF94c44nI4eMWqTf75mHGqGTYb8X3FEZR0yAX/fp/6', 1, 16.8, '');
 
 -- -----------------------------------------------------
 -- test data for leaderboard
