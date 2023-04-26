@@ -16,6 +16,27 @@
                 extraInput.classList.add("hidden")
             }
         }
+        function showMode(){
+            const inputMode = document.getElementById("input_mode").value;
+            const travelForm = document.getElementById("travel")
+            const electricForm = document.getElementById("electric")
+            const freightForm = document.getElementById("freight")
+            if(inputMode == "travel"){
+                travelForm.classList.remove("hidden")
+                electricForm.classList.add("hidden")
+                freightForm.classList.add("hidden")
+            }
+            if(inputMode == "electric"){
+                travelForm.classList.add("hidden")
+                electricForm.classList.remove("hidden")
+                freightForm.classList.add("hidden")
+            }
+            if(inputMode == "freight"){
+                travelForm.classList.add("hidden")
+                freightForm.classList.remove("hidden")
+                electricForm.classList.add("hidden")
+            }
+        }
     </script>
 </head>
 <body>
@@ -24,8 +45,18 @@
         <div class="content">
             <h1 style="text-align: center">Input Personal Usage For Each Category</h1>
         </div>
-        <div class="content box" id="travel" style="text-align: left">
-            <form action="/log" method="POST">
+
+        <div class="content box" style="text-align: left">
+            <label for="input_mode">Input Mode </label>
+
+            <select id="input_mode" name="input_mode" onchange="showMode()">
+                <option value="" selected disabled>Select</option>
+                <option value="travel">Travel</option>
+                <option value="electric">Electricity</option>
+                <option value="freight">Freight</option>
+            </select>
+
+            <form id="travel" class="hidden" action="/log" method="POST">
                 <h2 style="color: #343a40">Travel Data</h2>
                 <div>
                     <label for="travel_mode">Travel Mode</label>
@@ -51,6 +82,33 @@
                 </div>
                 <button type = "submit" class = "btn btn-outline-primary">Submit</button>
             </form>
+
+            <form id="electric" class="hidden" action="/log" method="POST">
+                <h2 style="color: #343a40">Electric Data</h2>
+                <div>
+                    <label for="energy">Energy Consumed(mWh) </label>
+                    <input type="text" id="energy" name="energy"> 
+                </div>
+                <div>
+                    <label for="date">Usage Date</label>
+                    <input type="date" id="date" name="date">
+                </div>
+                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
+            </form>
+
+            <form id="freight" class="hidden" action="/log" method="POST">
+                <h2 style="color: #343a40">Freight Data</h2>
+                <div>
+                    <label for="distance">Distance Traveled: </label>
+                    <input type="text" id="distance" name="distance"> 
+                </div>
+                <div>
+                    <label for="date">Usage Date</label>
+                    <input type="date" id="date" name="date">
+                </div>
+                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
+            </form>
+
         </div>
         <div class="content box" id="travel_results" style="<% if (!APIresults) { %> display: none;<% } %>">
             <h2 style="color: #343a40">Emission Results</h2>
