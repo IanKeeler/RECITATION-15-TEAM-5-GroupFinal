@@ -154,5 +154,16 @@ hr{
 }
 
 .profile-label{
-    padding: 50px 0 50px;
+    padding: 30px 0 30px;
+}
+
+.description-input-box{
+    width: 100%;
+    border-radius: 0.3rem;
+    border: 1px solid #aeaeae;
+}
+
+.force-right{
+    position: absolute;
+    right: 8rem;
 }

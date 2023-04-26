@@ -8,6 +8,7 @@ CREATE TABLE users(
   user_password VARCHAR(300) NOT NULL,
   user_weightfactor FLOAT NOT NULL,
   user_carbonscore FLOAT NOT NULL,
+  user_description TEXT,
   CONSTRAINT "username_unique" UNIQUE ("username")
 );
 
@@ -68,9 +69,9 @@ CREATE TABLE electricity(
 -- pass1
 -- pass2
 -- pass3
-INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ('user1', '$2b$10$4KoZfQeiD9MDlI5YRzMZtuBIJbXgjz.QqsZRmDG4NCfsXPSW4APWm', 1, 50);
-INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ('user2', '$2b$10$yPeUvrbER1W.Y/NGiffn8usAZFmltMhFB1BFo15jaBUX2dBcKzK76', 1, 27);
-INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ('user3', '$2b$10$SpdLRI.7Eb7qF94c44nI4eMWqTf75mHGqGTYb8X3FEZR0yAX/fp/6', 1, 16.8);
+INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ('user1', '$2b$10$4KoZfQeiD9MDlI5YRzMZtuBIJbXgjz.QqsZRmDG4NCfsXPSW4APWm', 1, 50, 'Dromaeosauridae (/ˌdrɒmi.əˈsɔːrɪdiː/) is a family of feathered theropod dinosaurs. They were generally small to medium-sized feathered carnivores that flourished in the Cretaceous Period. The name Dromaeosauridae means ''running lizards'', from Greek δρομαῖος (dromaîos), meaning ''running at full speed, swift'', and σαῦρος (saûros), meaning ''lizard''. In informal usage, they are often called raptors (after Velociraptor), a term popularized by the film Jurassic Park; several genera include the term "raptor" directly in their name, and popular culture has come to emphasize their bird-like appearance and speculated bird-like behavior.');
+INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ('user2', '$2b$10$yPeUvrbER1W.Y/NGiffn8usAZFmltMhFB1BFo15jaBUX2dBcKzK76', 1, 27, 'Crocodylomorpha is a group of pseudosuchian archosaurs that includes the crocodilians and their extinct relatives. They were the only members of Pseudosuchia to survive the end-Triassic extinction. During Mesozoic and early Cenozoic times, crocodylomorphs were far more diverse than at Present. Triassic forms were small, lightly built, active terrestrial animals. During the Jurassic, Crocodylomorphs morphologically diversified into numerous niches, with the subgroups Neosuchia (which includes modern crocodilians) and the extinct Thalattosuchia adapting to aquatic life.');
+INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ('user3', '$2b$10$SpdLRI.7Eb7qF94c44nI4eMWqTf75mHGqGTYb8X3FEZR0yAX/fp/6', 1, 16.8, '');
 
 -- -----------------------------------------------------
 -- test data for leaderboard
