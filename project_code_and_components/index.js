@@ -147,15 +147,16 @@ app.post('/register', async(req,res)=>{
 
   // default carbonscore/weight factor
   let carbonScore = 50;
-  let weightFactor = 1
+  let weightFactor = 1;
 
   // insert into db
-  let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore) VALUES ($1, $2, $3, $4) RETURNING *;';
+  let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
   db.any(query, [
     req.body.username,
     passwordHash,
     weightFactor,
-    carbonScore
+    carbonScore,
+    ''
   ])
   .then(function(data){
     console.log('data::::', data);
@@ -227,7 +228,6 @@ app.get('/leaderboard', (req, res) => {
 });
 
 // user profile data routines ------------------------------------
-// TODO~~~~
 const recent_trips = 'SELECT travel_mode, travel_distance, emissions, date FROM travel WHERE user_id = TODO;';
 app.get('/user_trips', (req, res) => {
   db.any(recent_trips)
@@ -242,9 +242,15 @@ app.get('/my-profile', (req, res) =>{
   res.redirect(reroute);
 });
 
-// res.render('pages/login.ejs', {message: err});
 app.get('/profile', (req,res) =>{
-  let query = `SELECT user_id, username, user_carbonscore FROM users WHERE username = '${req.query.user}';`;
+  let query = `SELECT user_id, username, user_carbonscore, user_description FROM users WHERE username = '${req.query.user}';`;
+  
+  // checks to see if this is the logged in user's profile
+  let isUser = false;
+  if(USERNAME === req.query.user){
+    isUser = true;
+  }
+  console.log('::::EDITABLE:', isUser);
 
   db.task('get-everything', task=>{
     return task.batch([task.any(query)]);
@@ -265,12 +271,37 @@ app.get('/profile', (req,res) =>{
       let total = data[1];
       console.log(trips);
       console.log(total);
-      res.render('pages/profile.ejs', {user: user, userTrip: trips, emissionTotal: total});
+      res.render('pages/profile.ejs', {user: user, userTrip: trips, emissionTotal: total, editing: isUser});
     })
   })
   .catch(err =>{
     console.log(err);
   })
+});
+
+// prevents ' character from messing with strings
+async function editString(string){
+  string = string.replace(/'/g, '\'\'');
+  console.log('EDITED STRING:::', string);
+
+  return string;
+}
+
+app.post('/edit-description', async(req,res)=>{
+  let description = await editString(req.body.description);
+  console.log('DESCRIPTION::::', description);
+
+  const query = `UPDATE users SET user_description = '${description}' WHERE username = '${USERNAME}' RETURNING *;`;
+  console.log(query);
+  db.any(query)
+    .then(data=>{
+      console.log(data);
+      let reroute = '/profile?user=' + USERNAME;
+      res.redirect(reroute);
+    })
+    .catch(err =>{
+      console.log(err);
+    });
 });
 
 // log routines --------------------------------------------------
