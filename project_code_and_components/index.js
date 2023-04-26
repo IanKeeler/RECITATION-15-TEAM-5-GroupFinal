@@ -311,8 +311,10 @@ app.get('/log', (req,res) => {
 
 app.post('/log', (req, res) => {
 
+  if(req.body.formId === "travel") {
+
   // Dictionary that contains all different activity API calls for different travel modes
-  emissionActivityId = {
+  travelActivityID = {
     "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
     "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
     "bus": 'passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na',
@@ -329,7 +331,7 @@ app.post('/log', (req, res) => {
     },
     data: {
       emission_factor: {
-        'activity_id': emissionActivityId[req.body.travel_mode],
+        'activity_id': travelActivityID[req.body.travel_mode],
       },
       parameters: {
         'passengers': 1,
@@ -360,11 +362,89 @@ app.post('/log', (req, res) => {
         })
         .catch(err => {
           console.log("There was an error fetching the user_id", err);
-        });   
+        });
     })
     .catch(error => {
-      res.render('pages/log', {result: [], message: "The API call has failed."});
+      res.render('pages/log', {result: [], message: "One of the travel API calls have failed."});
     });
+  } else if (req.body.formId === "household") {
+    // average household burns 886 kWh of energy from light a month. So 1.23 kWh per hour.
+    // electric furnaces use 26 kWh of energy per day. So 1.084 kWh per hour.
+    // a fully battery charge is 15 hours, and it takes 0.005 kWh for a full charge.
+    // in kWh
+    const totalEnergyUsage = (1.23 * parseInt(req.body.light)) + (1.084 * parseInt(req.body.heat)) + (parseInt(req.body.phone) / 0.075);
+  
+    // average showerhead emits 2.5 gallons of water per minute
+    // average toilet flushes 1.28 gallons of water each time
+    // average gallon of water costs $0.009
+    // in usd ($)
+    const totalWaterUsage = 0.009 * ((2.5 * parseInt(req.body.shower)) + (1.28 * parseInt(req.body.toilet)));
+    
+    (async () => {
+      let totalEmissions = 0;
+      for (let i = 0; i < 2; i++) {
+        try {
+          // Household API Call
+          const householdAPI = await axios({
+            url: 'https://beta3.api.climatiq.io/estimate',
+            method: 'POST',
+            dataType: 'json',
+            headers: {
+              'Authorization': 'Bearer ' + process.env.API_KEY,
+            },
+            data: {
+              emission_factor: (() => {
+                if (i === 0) {
+                  return {
+                    "activity_id": "electricity-energy_source_grid_mix",
+                    "source": "EPA",
+                    "region": "US",
+                    "year": "2022",
+                    "lca_activity": "electricity_generation"
+                  };
+                } else {
+                  return {
+                    "activity_id": "water-supply_wastewater_treatment",
+                    "source": "EPA",
+                    "region": "US",
+                    "year": "2022",
+                    "lca_activity": "cradle_to_shelf"
+                  };
+                }
+              })(),
+              parameters: (() => {
+                if (i === 0) {
+                  // handles electricity API parameters
+                  return {
+                    'energy': totalEnergyUsage,
+                    'energy_unit': "kWh"
+                  };
+                } else {
+                  // handles water API parameters
+                  return {
+                    'money': totalWaterUsage,
+                    'money_unit': "usd"
+                  };
+                }
+              })()
+            },
+          });
+          totalEmissions += householdAPI.data.co2e;
+        } catch(error) {
+            // Handle the error here
+            console.log("There is an error processing the household API call", error);
+        }
+      }
+      res.render('pages/log', {totalEmissions});
+      console.log("Total Emissions: ", totalEmissions);
+    })();
+  }
+  
+  // } else if (req.body.formId === "food") {
+
+  else {
+    console.log("There is a problem with the input data type: req.body.formId");
+  }
 });
 
 // logout routines --------------------------------------------------
