@@ -19,8 +19,8 @@ DROP TABLE IF EXISTS travel CASCADE;
 CREATE TABLE travel(
   travel_id SERIAL PRIMARY KEY,
   travel_mode VARCHAR(45) NOT NULL,
-  travel_distance INT NOT NULL,
-  emissions INT NOT NULL,
+  travel_distance FLOAT NOT NULL,
+  emissions FLOAT NOT NULL,
   date DATE NOT NULL,
   user_id INT NOT NULL,
   CONSTRAINT user_id
@@ -29,37 +29,37 @@ CREATE TABLE travel(
 );
 
 -- -----------------------------------------------------
--- Table freight
+-- Table food
 -- -----------------------------------------------------
-/* DROP TABLE IF EXISTS freight CASCADE;
-CREATE TABLE freight(
-  freight_id SERIAL PRIMARY KEY,
-  freight_mode VARCHAR(45) NOT NULL,
-  freight_weight INT NOT NULL,
-  freight_distance INT NOT NULL,
-  emissions INT NOT NULL,
+DROP TABLE IF EXISTS food CASCADE;
+CREATE TABLE food(
+  food_id SERIAL PRIMARY KEY,
+  beef_bought FLOAT NOT NULL,
+  dairy_bought FLOAT NOT NULL,
+  fruits_bought FLOAT NOT NULL,
+  emissions FLOAT NOT NULL,
   date DATE NOT NULL,
   user_id INT NOT NULL,
   CONSTRAINT user_id
     FOREIGN KEY (user_id)
     REFERENCES users(user_id)
-); */
+); 
 
 -- -----------------------------------------------------
--- Table electricity
+-- Table household
 -- -----------------------------------------------------
-/* DROP TABLE IF EXISTS electricity CASCADE;
-CREATE TABLE electricity(
-  electricity_id SERIAL PRIMARY KEY,
-  electricity_mode VARCHAR(45) NOT NULL,
-  electricity_used INT NOT NULL,
-  emissions INT NOT NULL,
-  date DATE NOT NULL,
-  user_id INT NOT NULL,
-  CONSTRAINT user_id
+DROP TABLE IF EXISTS household CASCADE;
+CREATE TABLE household(
+  household_id SERIAL PRIMARY KEY,
+  electricity_used FLOAT NOT NULL, -- in kWH
+  water_used FLOAT NOT NULL, -- in $
+  emissions FLOAT NOT NULL, -- in kg of CO2
+  date DATE NOT NULL, 
+  user_id INT NOT NULL, 
+  CONSTRAINT user_id 
     FOREIGN KEY (user_id)
     REFERENCES users(user_id)
-); */
+); 
 
 -- -----------------------------------------------------
 -- initialize test users: currently only here for login/registration
