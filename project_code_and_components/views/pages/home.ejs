@@ -27,7 +27,7 @@
     <!-- total user -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">n</h5>
+        <h5 class="card-title"><%= entriesTotal %></h5>
         <h6 class="card-subtitle mb-2 text-muted">Contributions</h6>
         <p class="card-text">Your total log entries</p>
       </div>
@@ -36,7 +36,7 @@
     <!-- total emissions  -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">n kg</h5>
+        <h5 class="card-title"><%= emissionsTotal %> kg</h5>
         <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
         <p class="card-text">Your logged carbon emissions</p>
       </div>
@@ -45,7 +45,7 @@
     <!-- carbon score -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">n</h5>
+        <h5 class="card-title"><%= carbonScore %></h5>
         <h6 class="card-subtitle mb-2 text-muted">Carbon score</h6>
         <p class="card-text">Your site score</p>
       </div>
@@ -54,7 +54,7 @@
     <!-- rank -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">#n</h5>
+        <h5 class="card-title">#<%= userRank %></h5>
         <h6 class="card-subtitle mb-2 text-muted">Rank</h6>
         <p class="card-text">Your rank across all users</p>
       </div>
@@ -70,7 +70,7 @@
     <!-- total users -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">n</h5>
+        <h5 class="card-title"><%= popGlobal %></h5>
         <h6 class="card-subtitle mb-2 text-muted">Users</h6>
         <p class="card-text">Number of active accounts</p>
       </div>
@@ -79,7 +79,7 @@
     <!-- total log entries -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">n</h5>
+        <h5 class="card-title"><%= entriesGlobal %></h5>
         <h6 class="card-subtitle mb-2 text-muted">Contributions</h6>
         <p class="card-text">Total log entries across all users</p>
       </div>
@@ -88,7 +88,7 @@
     <!-- emissions for all users -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">n kg</h5>
+        <h5 class="card-title"><%= emissionsGlobal %> kg</h5>
         <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
         <p class="card-text">Total emissions across all users</p>
       </div>
@@ -97,7 +97,7 @@
     <!-- average carbon score -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">n</h5>
+        <h5 class="card-title"><%= avgCarbonscoreGlobal %></h5>
         <h6 class="card-subtitle mb-2 text-muted">Carbon score</h6>
         <p class="card-text">Average carbon score across users</p>
       </div>

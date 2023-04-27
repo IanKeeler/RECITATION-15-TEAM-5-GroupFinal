@@ -242,11 +242,40 @@ app.get('/home', async(req,res) => {
   // get tip to render on page
   let tip = await getTip();
 
-  res.render('pages/home', {tip: tip, user: USERNAME});
+  // get the currently logged in user's user_id
+  let getUserID = `SELECT user_id FROM users WHERE username = '${USERNAME}';`;
+  const userID = await db.any(getUserID);
+
+  // queries to populate user stats
+  let fetchEntriesTotal = `SELECT COUNT(*) AS total_entries FROM (SELECT user_id FROM travel WHERE user_id = $1 UNION ALL SELECT user_id FROM food WHERE user_id = $1 UNION ALL SELECT user_id FROM household WHERE user_id = $1) subquery;`;
+  const entriesTotal = await db.one(fetchEntriesTotal, [userID[0].user_id]);
+
+  let fetchEmissionsTotal = `SELECT SUM(emissions) AS total_emissions FROM (SELECT emissions FROM travel WHERE user_id = $1 UNION ALL SELECT emissions FROM food WHERE user_id = $1 UNION ALL SELECT emissions FROM household WHERE user_id = $1) subquery;`;
+  const emissionsTotal = await db.one(fetchEmissionsTotal, [userID[0].user_id]);
+
+  let fetchCarbonScore = `SELECT user_carbonscore FROM users WHERE user_id = $1;`;
+  const carbonScore = await db.one(fetchCarbonScore, [userID[0].user_id]);
+
+  let fetchRank = `SELECT row_number FROM (SELECT row_number() OVER(ORDER BY user_carbonscore), user_id, user_carbonscore FROM users) subquery WHERE user_id = $1;`;
+  const userRank = await db.one(fetchRank, [userID[0].user_id]);
+
+  // queries to populate global stats
+  let fetchPopGlobal = `SELECT COUNT(*) AS population FROM users;`;
+  const popGlobal = await db.one(fetchPopGlobal);
+
+  let fetchEntriesGlobal = `SELECT COUNT(*) AS global_entries FROM (SELECT travel_id AS entries FROM travel UNION ALL SELECT food_id AS entries FROM food UNION ALL SELECT household_id AS entries FROM household) subquery;`;
+  const entriesGlobal = await db.one(fetchEntriesGlobal);
+
+  let fetchEmissionsGlobal = `SELECT SUM(emissions) AS global_emissions FROM (SELECT emissions FROM travel UNION ALL SELECT emissions FROM food UNION ALL SELECT emissions FROM household) subquery;`;
+  const emissionsGlobal = await db.one(fetchEmissionsGlobal);
+
+  let fetchAvgCarbonscoreGlobal = `SELECT AVG(user_carbonscore) AS avg_carbonscore FROM users;`;
+  const avgCarbonscoreGlobal = await db.one(fetchAvgCarbonscoreGlobal);
+
+  res.render('pages/home', {tip: tip, user: USERNAME, entriesTotal: entriesTotal.total_entries, emissionsTotal: emissionsTotal.total_emissions, carbonScore: carbonScore.user_carbonscore, userRank: userRank.row_number, popGlobal: popGlobal.population, entriesGlobal: entriesGlobal.global_entries, emissionsGlobal: emissionsGlobal.global_emissions, avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore});
 });
 
 // leaderboard routines -------------------------------------------
-//const leaderboard_all = 'SELECT username, user_carbonscore FROM users ORDER BY user_carbonscore;';
 const leaderboard_all = 'SELECT row_number() OVER(ORDER BY user_carbonscore), username, user_carbonscore FROM users;';
 app.get('/leaderboard', (req, res) => {
   db.any(leaderboard_all)
