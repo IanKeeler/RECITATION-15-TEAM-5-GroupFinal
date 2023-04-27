@@ -68,7 +68,7 @@ let travelID = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
-    res.redirect('/log');
+    res.redirect('/home');
 });
 
 // force hashes to forcibly add users thru create.sql: change variable 'password' and load api route; will show before proper stuff for login page
