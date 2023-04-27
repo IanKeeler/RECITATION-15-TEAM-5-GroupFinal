@@ -61,7 +61,9 @@
             </select>
         </div>
         <div class="content box" id="outer-box" style="text-align: left; display: none;">
-            <form id="travel" class="hidden" action="/log" method="POST">
+
+            <!-- Travel Input -->
+            <form id="travel" class="hidden" action="/travel_log" method="POST">
                 <h2 style="color: #343a40">Travel Data</h2>
                 <hr>
                 <div>
@@ -83,14 +85,15 @@
                     <input type="text" id="distance" name="distance"> 
                 </div>
                 <div>
-                    <label for="travel_date">Travel Date</label>
+                    <label for="travel_date">Date</label>
                     <input type="date" id="travel_date" name="travel_date">
                 </div>
                 <br>
-                <button type="submit" name="formId" value="travel" class = "btn btn-outline-primary">Submit</button>
+                <button type="submit" class = "btn btn-outline-primary">Submit</button>
             </form>
 
-            <form id="household" class="hidden" action="/log" method="POST">
+            <!-- Household Input -->
+            <form id="household" class="hidden" action="/household_log" method="POST">
                 <h2 style="color: #343a40">Household Data</h2>
                 <hr>
                 <div>
@@ -107,10 +110,6 @@
                         <label for="phone">Phone Usage(hours)</label>
                         <input type="text" id="phone" name="phone"> 
                     </div>
-                    <div>
-                        <label for="date">Date</label>
-                        <input type="date" id="date" name="date">
-                    </div>
                 </div>
                 <br>
                 <div>
@@ -123,37 +122,69 @@
                         <label for="toilet">Number of Toilet Flushes</label>
                         <input type="text" id="toilet" name="toilet"> 
                     </div>
-                    <div>
-                        <label for="date">Date</label>
-                        <input type="date" id="date" name="date">
-                    </div>
                 </div>
                 <br>
-                <button type = "submit" name="formId" value="household" class = "btn btn-outline-primary">Submit</button>
+                <div>
+                    <label for="household_date">Date</label>
+                    <input type="date" id="household_date" name="household_date">
+                </div>
+                <br>
+                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
             </form>
 
-            <form id="food" class="hidden" action="/log" method="POST">
+            <!-- Food Input -->
+            <form id="food" class="hidden" action="/food_log" method="POST">
                 <h2 style="color: #343a40">Food Data</h2>
                 <hr>
                 <div>
-                    <label for="distance">Distance Traveled: </label>
-                    <input type="text" id="distance" name="distance"> 
+                    <label for="beef">Money Spent on Beef($)</label>
+                    <input type="text" id="beef" name="beef"> 
                 </div>
                 <div>
-                    <label for="date">Usage Date</label>
-                    <input type="date" id="date" name="date">
+                    <label for="dairy">Money Spent on Dairy($)</label>
+                    <input type="text" id="dair" name="dairy"> 
+                </div>
+                <div>
+                    <label for="fruits">Money Spent on Fruits and Vegetables($)</label>
+                    <input type="text" id="fruits" name="fruits"> 
+                </div>
+                <div>
+                    <label for="food_date">Date</label>
+                    <input type="date" id="food_date" name="food_date">
                 </div>
                 <br>
-                <button type = "submit" name="formId" value="food" class = "btn btn-outline-primary">Submit</button>
+                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
             </form>
 
+        <!-- Printing results  -->
         </div>
-        <div class="content box" id="travel_results" style="<% if (!APIresults) { %> display: none;<% } %>">
+        <div class="content box" style="<% if (travelEmissions == null) { %> display: none;<% } %>">
             <h2 style="color: #343a40">Emission Results</h2>
-            <div id="co2_data">
-                CO2: <%= APIresults ? APIresults.co2e + " "  + APIresults.units : "" %>
+            <hr>
+            <div>
+                <h3>Travel Emissions</h3> 
+                CO2: <%= travelEmissions != null ? travelEmissions.co2e.toFixed(3) + " "  + travelEmissions.units : "none" %>
             </div>
         </div>
+
+        <div class="content box" style="<% if (householdEmissions == null) { %> display: none;<% } %>">
+            <h2 style="color: #343a40">Emission Results</h2>
+            <hr>
+            <div>
+                <h3>Household Emissions</h3> 
+                CO2: <%= householdEmissions != null ? householdEmissions.toFixed(3) + " kg" : "none" %>
+            </div>
+        </div>
+
+        <div class="content box" style="<% if (foodEmissions == null) { %> display: none;<% } %>">
+            <h2 style="color: #343a40">Emission Results</h2>
+            <hr>
+            <div>
+                <h3>Food Emissions</h3> 
+                CO2: <%= foodEmissions != null ? foodEmissions.toFixed(3) + " kg" : "none" %>
+            </div>
+        </div>
+
     </main>
 </body>
 <%- include ('../partials/footer') %>

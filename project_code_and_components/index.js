@@ -64,6 +64,7 @@ app.use(
 // INCLUDE EVERYTHING HERE ---------------------------------------------------------------------------------
 // GLOBAL VARIABLES
 let USERNAME = '';
+let travelID = '';
 
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
@@ -275,22 +276,21 @@ app.get('/profile', (req,res) =>{
 
 // log routines --------------------------------------------------
 app.get('/log', (req,res) => {
-  res.render('pages/log', { APIresults: null});
+  res.render('pages/log', { 
+    travelEmissions: null,
+    householdEmissions: null,
+    foodEmissions: null
+  });
 });
 
-app.post('/log', (req, res) => {
-
-  if(req.body.formId === "travel") {
-
-  // Dictionary that contains all different activity API calls for different travel modes
+// Travel route
+app.post('/travel_log', (req, res) => {
   travelActivityID = {
     "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
     "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
     "bus": 'passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na',
     "train": 'passenger_train-route_type_commuter_rail-fuel_source_na'
   }
-
-  // Travel API call
   axios({
     url: 'https://beta3.api.climatiq.io/estimate',
     method: 'POST',
@@ -313,17 +313,15 @@ app.post('/log', (req, res) => {
       const getUserID = "SELECT user_id FROM users WHERE username = $1";
       const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
 
-      // First, get the user_id
       db.one(getUserID, [USERNAME])
         .then(user => {
-          // Now use the user_id to insert into the travel table
           db.none(travelQuery, [req.body.travel_mode, req.body.distance, results.data.co2e, req.body.travel_date, user.user_id])
             .then(() => {
-              const APIresults = {
+              const travelEmissions = {
                 co2e: results.data.co2e,
                 units: results.data.co2e_unit
               }
-              res.render('pages/log', {APIresults});
+              res.render('pages/log', {travelEmissions, householdEmissions: null, foodEmissions: null});
             })
             .catch(err => {
               console.log("There was an error entering data into the travel table", err);
@@ -336,21 +334,19 @@ app.post('/log', (req, res) => {
     .catch(error => {
       res.render('pages/log', {result: [], message: "One of the travel API calls have failed."});
     });
-  } else if (req.body.formId === "household") {
-    // average household burns 886 kWh of energy from light a month. So 1.23 kWh per hour.
-    // electric furnaces use 26 kWh of energy per day. So 1.084 kWh per hour.
-    // a fully battery charge is 15 hours, and it takes 0.005 kWh for a full charge.
-    // in kWh
+})
+
+// Household route
+app.post('/household_log', (req, res) => {
+
+    // algorithm that factors in light, heat, and phone usage. Units of kWh
     const totalEnergyUsage = (1.23 * parseInt(req.body.light)) + (1.084 * parseInt(req.body.heat)) + (parseInt(req.body.phone) / 0.075);
   
-    // average showerhead emits 2.5 gallons of water per minute
-    // average toilet flushes 1.28 gallons of water each time
-    // average gallon of water costs $0.009
-    // in usd ($)
+    // algorithm that factors in shower and toile water usage. Units of $
     const totalWaterUsage = 0.009 * ((2.5 * parseInt(req.body.shower)) + (1.28 * parseInt(req.body.toilet)));
     
     (async () => {
-      let totalEmissions = 0;
+      let householdEmissions = 0;
       for (let i = 0; i < 2; i++) {
         try {
           // Household API Call
@@ -383,13 +379,11 @@ app.post('/log', (req, res) => {
               })(),
               parameters: (() => {
                 if (i === 0) {
-                  // handles electricity API parameters
                   return {
                     'energy': totalEnergyUsage,
                     'energy_unit': "kWh"
                   };
                 } else {
-                  // handles water API parameters
                   return {
                     'money': totalWaterUsage,
                     'money_unit': "usd"
@@ -398,23 +392,116 @@ app.post('/log', (req, res) => {
               })()
             },
           });
-          totalEmissions += householdAPI.data.co2e;
+          householdEmissions += householdAPI.data.co2e;
         } catch(error) {
-            // Handle the error here
             console.log("There is an error processing the household API call", error);
         }
       }
-      res.render('pages/log', {totalEmissions});
-      console.log("Total Emissions: ", totalEmissions);
-    })();
-  }
-  
-  // } else if (req.body.formId === "food") {
+      const getUserID = "SELECT user_id FROM users WHERE username = $1";
+      const householdQuery = "INSERT INTO household (electricity_used, water_used, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
 
-  else {
-    console.log("There is a problem with the input data type: req.body.formId");
-  }
+      db.one(getUserID, [USERNAME])
+        .then(user => {
+          db.none(householdQuery, [totalEnergyUsage, totalWaterUsage, householdEmissions, req.body.household_date, user.user_id])
+            .then(() => {
+              res.render('pages/log', {householdEmissions, travelEmissions: null, foodEmissions: null});
+            })
+            .catch(err => {
+              console.log("There was an error entering data into the household table", err);
+            });
+        })
+        .catch(err => {
+          console.log("There was an error fetching the user_id", err);
+        });
+    })();
+})
+
+// Food route
+app.post('/food_log', (req,res) => {
+  let foodEmissions = 0;
+  (async () => {
+    for (let i = 0; i < 3; i++) {
+      try {
+        // Food API Call
+        const foodAPI = await axios({
+          url: 'https://beta3.api.climatiq.io/estimate',
+          method: 'POST',
+          dataType: 'json',
+          headers: {
+            'Authorization': 'Bearer ' + process.env.API_KEY,
+          },
+          data: {
+            emission_factor: (() => {
+              if (i === 0) {
+                return {
+                  "activity_id": "consumer_goods-type_meat_products_beef",
+                  "source": "EXIOBASE",
+                  "region": "US",
+                  "year": "2021",
+                  "lca_activity": "unknown"
+                };
+              } else if (i === 1) {
+                return {
+                  "activity_id": "consumer_goods-type_dairy_products",
+                  "source": "EXIOBASE",
+                  "region": "US",
+                  "year": "2021",
+                  "lca_activity": "unknown"
+                };
+              } else {
+                return {
+                  "activity_id": "arable_farming-type_fresh_vegetables_melons_potatoes",
+                  "source": "EPA",
+                  "region": "US",
+                  "year": "2022",
+                  "lca_activity": "cradle_to_shelf"
+                };
+              }
+            })(),
+            parameters: (() => {
+              if (i === 0) {
+                return {
+                  'money': parseInt(req.body.beef),
+                  'money_unit': "usd"
+                };
+              } else if (i === 1) {
+                return {
+                  'money': parseInt(req.body.dairy),
+                  'money_unit': "usd"
+                };
+              } else {
+                return {
+                  'money': parseInt(req.body.fruits),
+                  'money_unit': "usd"
+                };
+              }
+            })()
+          },
+        });
+        foodEmissions += foodAPI.data.co2e;
+      } catch(error) {
+          console.log("There is an error processing the household API call", error);
+      }
+    }
+    const getUserID = "SELECT user_id FROM users WHERE username = $1";
+    const foodQuery = "INSERT INTO food (beef_bought, dairy_bought, fruits_bought, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5, $6)";
+
+    db.one(getUserID, [USERNAME])
+      .then(user => {
+        db.none(foodQuery, [parseInt(req.body.beef), parseInt(req.body.dairy), parseInt(req.body.fruits), foodEmissions, req.body.food_date, user.user_id])
+          .then(() => {
+            res.render('pages/log', {foodEmissions, travelEmissions: null, householdEmissions: null});
+          })
+          .catch(err => {
+            console.log("There was an error entering data into the food table", err);
+          });
+      })
+      .catch(err => {
+        console.log("There was an error fetching the user_id", err);
+      });
+  })();
 });
+
 
 // logout routines --------------------------------------------------
 app.get('/logout', (req, res) => {
