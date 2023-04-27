@@ -109,6 +109,36 @@ hr{
     width: 100%;
 }
 
+/* home --------------------------------------- */
+/* same styling as links */
+#tip-dismissal{
+    color: #198754;
+    text-decoration: underline;
+}
+
+#tip-dismissal:hover{
+    color: #a4cb03;
+    text-decoration: none;
+}
+
+#tip-dismissal:active{
+    color: #198754;
+    text-decoration: none;
+}
+
+.stat-container{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.card-title{
+    font-size: 2rem;
+}
+
+.card-text{
+    font-size: 0.95rem;
+}
+
 /* search --------------------------------------- */
 
 .search-table{

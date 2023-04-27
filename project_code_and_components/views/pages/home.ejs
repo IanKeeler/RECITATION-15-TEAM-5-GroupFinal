@@ -1,11 +1,118 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
-<main>
-  <div class="container">
-    <h1><center>Welcome User!</center></h1>
-    <h1><center>Tip of the day: Remember to turn off the lights when you leave a room to save energy!</center></h1>
+<main class = "content">
+  <!-- TIP BOX ------------------------------------------- -->
+  <div id = "tip-box">
+    <div class = "box">
+        <strong>Tip: </strong><%= tip %>
+        <span id = "tip-dismissal">Dismiss</span>
+    </div>
+  </div>
+  <br>
+
+  <!-- WELCOME ------------------------------------------- -->
+  <h1>Welcome to GreenChallenge, <strong><%= user %></strong></h1>
+  <p>
+    Welcome to GreenChallenge!  Game-ify and track your carbon emissions
+    by entering tasks you do in your day-to-day life and checking their emissions. 
+    <a href = "/log">Get started by putting an entry to your log.</a>
+  </p>
+  <br>
+
+  <!-- YOUR STATS ------------------------------------------- -->
+  <h3>Your Stats</h3>
+  <div class = "stat-container">
+
+    <!-- total user -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">n</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Contributions</h6>
+        <p class="card-text">Your total log entries</p>
+      </div>
+    </div>
+
+    <!-- total emissions  -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">n kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Your logged carbon emissions</p>
+      </div>
+    </div>
+
+    <!-- carbon score -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">n</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Carbon score</h6>
+        <p class="card-text">Your site score</p>
+      </div>
+    </div>
+
+    <!-- rank -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">#n</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Rank</h6>
+        <p class="card-text">Your rank across all users</p>
+      </div>
+    </div>
+
+  </div>
+  <br><br>
+
+  <!-- GLOBAL STATS ------------------------------------------- -->
+  <h3>Global Stats</h3>
+  <div class = "stat-container">
+    
+    <!-- total users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">n</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Users</h6>
+        <p class="card-text">Number of active accounts</p>
+      </div>
+    </div>
+
+    <!-- total log entries -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">n</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Contributions</h6>
+        <p class="card-text">Total log entries across all users</p>
+      </div>
+    </div>
+
+    <!-- emissions for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">n kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Total emissions across all users</p>
+      </div>
+    </div>
+
+    <!-- average carbon score -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">n</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Carbon score</h6>
+        <p class="card-text">Average carbon score across users</p>
+      </div>
+    </div>
+
   </div>
 </main>
+
+<script>
+  let tipToggle = document.querySelector("#tip-dismissal");
+  let tipBox = document.querySelector("#tip-box");
+
+  tipToggle.addEventListener('click', function(){
+    tipBox.style.display = 'none';
+  });
+</script>
 
 <%- include('../partials/footer') %>

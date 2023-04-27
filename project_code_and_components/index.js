@@ -210,10 +210,39 @@ const auth = (req, res, next) => {
 
 // Authentication Required
 app.use(auth); 
+  
+// home routines -------------------------------------------
+// call this function to generate tips
+async function getTip(){
+  // TIPS ARRAY: change strings in these to represent tips that someone can recieve
+  // NO OTHER code manipulation necessary to access tips
+  const tips = [
+    'Reduce your energy consumption by turning off lights and unplugging electronics when not in use.',
+    'Use public transportation or carpool instead of driving alone.',
+    'Switch to energy-efficient light bulbs.',
+    'Buy products made from sustainable materials.',
+    'Plant trees or support reforestation efforts.',
+    'Reduce meat consumption, as livestock farming is a significant source of greenhouse gas emissions.',
+    'Use reusable bags, water bottles, and containers instead of single-use plastic items.',
+    'Buy locally grown and produced foods to reduce transportation emissions.',
+    'Reduce water consumption by taking shorter showers and fixing leaks.',
+    'Use a programmable thermostat to regulate heating and cooling.',
+    'Choose products with minimal packaging to reduce waste.',
+    'Use renewable energy sources like solar or wind power.',
+    'Insulate your home to reduce heating and cooling needs.',
+    'Support companies and politicians who prioritize environmental protection.',
+    'Educate yourself and others about climate change and ways to reduce your carbon footprint.'
+  ];
 
-// home routines --------------------------------------------------
-app.get('/home', (req,res) => {
-  res.render('pages/home');
+  let i = Math.floor(Math.random() * tips.length);
+  return tips[i];
+}
+  
+app.get('/home', async(req,res) => {
+  // get tip to render on page
+  let tip = await getTip();
+
+  res.render('pages/home', {tip: tip, user: USERNAME});
 });
 
 // leaderboard routines -------------------------------------------
