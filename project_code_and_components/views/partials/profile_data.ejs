@@ -1,10 +1,11 @@
 <h3>Recent Activity</h3>
 <% if(locals.userTrip){ %>
+    <h4>Travel</h4>
     <table class = "table table-striped">
         <thead>
             <tr>
                 <th scope = "col">Mode</th>
-                <th scope = "col">Miles</th>
+                <th scope = "col">Distance (mi)</th>
                 <th scope = "col">Emissions (kg)</th>
                 <th scope = "col">Date</th>
             </tr>
@@ -15,7 +16,57 @@
                     <td class = "td-vertical-center"><%= trip.travel_mode %></td>
                     <td class = "td-vertical-center"><%= trip.travel_distance %></td>
                     <td class = "td-vertical-center"><%= trip.emissions %></td>
-                    <td class = "td-vertical-center"><%= trip.date %></td>
+                    <td class = "td-vertical-center"><%= trip.clean_date %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>
+<br>
+<% if(locals.foodData){ %>
+    <h4>Food</h4>
+    <table class = "table table-striped">
+        <thead>
+            <tr>
+                <th scope = "col">Beef Spending</th>
+                <th scope = "col">Dairy Spending</th>
+                <th scope = "col">Fruits Spending</th>
+                <th scope = "col">Emissions (kg)</th>
+                <th scope = "col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% foodData.forEach(function(food){ %>
+                <tr scope = "row">
+                    <td class = "td-vertical-center">$<%= food.beef_bought %></td>
+                    <td class = "td-vertical-center">$<%= food.dairy_bought %></td>
+                    <td class = "td-vertical-center">$<%= food.fruits_bought %></td>
+                    <td class = "td-vertical-center"><%= food.emissions %></td>
+                    <td class = "td-vertical-center"><%= food.clean_date %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>
+<br>
+<% if(locals.householdData){ %>
+    <h4>Household</h4>
+    <table class = "table table-striped">
+        <thead>
+            <tr>
+                <th scope = "col">Electricity Used (kWh)</th>
+                <th scope = "col">Water Used (gal)</th>
+                <th scope = "col">Emissions (kg)</th>
+                <th scope = "col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% householdData.forEach(function(household){ %>
+                <tr scope = "row">
+                    <td class = "td-vertical-center"><%= household.electricity_used %></td>
+                    <td class = "td-vertical-center"><%= household.water_used %></td>
+                    <td class = "td-vertical-center"><%= household.emissions %></td>
+                    <td class = "td-vertical-center"><%= household.clean_date %></td>
                 </tr>
             <% }) %>
         </tbody>
