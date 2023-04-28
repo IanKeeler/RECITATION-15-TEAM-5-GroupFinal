@@ -66,6 +66,14 @@ app.use(
 let USERNAME = '';
 let travelID = '';
 
+// prevents ' character from messing with strings
+async function editString(string){
+  string = string.replace(/'/g, '\'\'');
+  console.log('EDITED STRING:::', string);
+
+  return string;
+}
+
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
     res.redirect('/home');
@@ -145,30 +153,42 @@ app.get('/register', (req,res)=>{
 app.post('/register', async(req,res)=>{
   // add to user table
   const passwordHash = await bcrypt.hash(req.body.password, 10);
+  let processedUsername = await editString(req.body.username);
 
   // default carbonscore/weight factor
   let carbonScore = 50;
   let weightFactor = 1;
 
-  // insert into db
-  let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
-  db.any(query, [
-    req.body.username,
-    passwordHash,
-    weightFactor,
-    carbonScore,
-    ''
+  let checkUser = 'SELECT username FROM users WHERE username = $1;';
+  db.any(checkUser, [
+    processedUsername
   ])
   .then(function(data){
-    console.log('data::::', data);
-    console.log('registration successful');
-    res.status(200);
-    res.redirect('/login');
+    console.log('USERNAME RETRIEVE::::', data)
+    if(Object.keys(data).length != 0){
+      console.log('USERNAME CHECKED AS EXISTENT');
+      throw Error('Username taken. Please choose another username.');
+
+    }else{
+      // insert into db
+      let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
+      db.any(query, [
+        processedUsername,
+        passwordHash,
+        weightFactor,
+        carbonScore,
+        ''
+      ])
+      .then(function(data){
+        console.log('data::::', data);
+        console.log('registration successful');
+        res.redirect('/login');
+      })
+    }
   })
   .catch(err=>{
     console.log(err);
-    res.status(400);
-    res.redirect('/register');
+    res.render('pages/register.ejs', {message: err, hasError: true});
   })
 })
 
@@ -337,14 +357,6 @@ app.get('/profile', (req,res) =>{
     console.log(err);
   })
 });
-
-// prevents ' character from messing with strings
-async function editString(string){
-  string = string.replace(/'/g, '\'\'');
-  console.log('EDITED STRING:::', string);
-
-  return string;
-}
 
 app.post('/edit-description', async(req,res)=>{
   let description = await editString(req.body.description);
