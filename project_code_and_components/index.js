@@ -270,10 +270,10 @@ app.get('/home', async(req,res) => {
   let fetchEntriesTotal = `SELECT COUNT(*) AS total_entries FROM (SELECT user_id FROM travel WHERE user_id = $1 UNION ALL SELECT user_id FROM food WHERE user_id = $1 UNION ALL SELECT user_id FROM household WHERE user_id = $1) subquery;`;
   const entriesTotal = await db.one(fetchEntriesTotal, [userID[0].user_id]);
 
-  let fetchEmissionsTotal = `SELECT SUM(emissions) AS total_emissions FROM (SELECT emissions FROM travel WHERE user_id = $1 UNION ALL SELECT emissions FROM food WHERE user_id = $1 UNION ALL SELECT emissions FROM household WHERE user_id = $1) subquery;`;
+  let fetchEmissionsTotal = `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions FROM (SELECT emissions FROM travel WHERE user_id = $1 UNION ALL SELECT emissions FROM food WHERE user_id = $1 UNION ALL SELECT emissions FROM household WHERE user_id = $1) subquery;`;
   const emissionsTotal = await db.one(fetchEmissionsTotal, [userID[0].user_id]);
 
-  let fetchCarbonScore = `SELECT user_carbonscore FROM users WHERE user_id = $1;`;
+  let fetchCarbonScore = `SELECT ROUND(user_carbonscore::numeric, 2) AS user_carbonscore FROM users WHERE user_id = $1;`;
   const carbonScore = await db.one(fetchCarbonScore, [userID[0].user_id]);
 
   let fetchRank = `SELECT row_number FROM (SELECT row_number() OVER(ORDER BY user_carbonscore), user_id, user_carbonscore FROM users) subquery WHERE user_id = $1;`;
@@ -286,10 +286,10 @@ app.get('/home', async(req,res) => {
   let fetchEntriesGlobal = `SELECT COUNT(*) AS global_entries FROM (SELECT travel_id AS entries FROM travel UNION ALL SELECT food_id AS entries FROM food UNION ALL SELECT household_id AS entries FROM household) subquery;`;
   const entriesGlobal = await db.one(fetchEntriesGlobal);
 
-  let fetchEmissionsGlobal = `SELECT SUM(emissions) AS global_emissions FROM (SELECT emissions FROM travel UNION ALL SELECT emissions FROM food UNION ALL SELECT emissions FROM household) subquery;`;
+  let fetchEmissionsGlobal = `SELECT ROUND(SUM(emissions)::numeric, 2) AS global_emissions FROM (SELECT emissions FROM travel UNION ALL SELECT emissions FROM food UNION ALL SELECT emissions FROM household) subquery;`;
   const emissionsGlobal = await db.one(fetchEmissionsGlobal);
 
-  let fetchAvgCarbonscoreGlobal = `SELECT AVG(user_carbonscore) AS avg_carbonscore FROM users;`;
+  let fetchAvgCarbonscoreGlobal = `SELECT ROUND(AVG(user_carbonscore)::numeric, 2) AS avg_carbonscore FROM users;`;
   const avgCarbonscoreGlobal = await db.one(fetchAvgCarbonscoreGlobal);
 
   res.render('pages/home', {tip: tip, user: USERNAME, entriesTotal: entriesTotal.total_entries, emissionsTotal: emissionsTotal.total_emissions, carbonScore: carbonScore.user_carbonscore, userRank: userRank.row_number, popGlobal: popGlobal.population, entriesGlobal: entriesGlobal.global_entries, emissionsGlobal: emissionsGlobal.global_emissions, avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore});
@@ -322,7 +322,7 @@ app.get('/my-profile', (req, res) =>{
 });
 
 app.get('/profile', (req,res) =>{
-  let query = `SELECT user_id, username, user_carbonscore, user_description FROM users WHERE username = '${req.query.user}';`;
+  let query = `SELECT user_id, username, ROUND(user_carbonscore::numeric, 2) AS user_carbonscore, user_description FROM users WHERE username = '${req.query.user}';`;
   
   // checks to see if this is the logged in user's profile
   let isUser = false;
@@ -340,17 +340,21 @@ app.get('/profile', (req,res) =>{
     console.log('user::::', user);
     console.log('user id::::', user.user_id);
 
-    let fetchTravelData = `SELECT * FROM travel WHERE user_id = ${user.user_id}`;
-    let fetchEmissionTotal = `SELECT SUM(emissions) AS total_emissions FROM travel WHERE user_id = ${user.user_id};`;
+    let fetchTravelData = `SELECT travel_mode, travel_distance, ROUND(emissions::numeric, 2) AS emissions, TO_CHAR(date, 'Mon dd, yyyy') AS clean_date FROM travel WHERE user_id = ${user.user_id} ORDER BY date DESC LIMIT 5`;
+    let fetchFoodData = `SELECT ROUND(beef_bought::numeric, 2) AS beef_bought, ROUND(dairy_bought::numeric, 2) AS dairy_bought, ROUND(fruits_bought::numeric, 2) AS fruits_bought, ROUND(emissions::numeric, 2) AS emissions, TO_CHAR(date, 'Mon dd, yyyy') AS clean_date FROM food WHERE user_id = ${user.user_id} ORDER BY date DESC LIMIT 5`;
+    let fetchHouseholdData = `SELECT ROUND(electricity_used::numeric, 2) AS electricity_used, ROUND((water_used/0.009)::numeric, 2) AS water_used, ROUND(emissions::numeric, 2) AS emissions, TO_CHAR(date, 'Mon dd, yyyy') AS clean_date FROM household WHERE user_id = ${user.user_id} ORDER BY date DESC LIMIT 5`;
+    let fetchEmissionTotal = `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions FROM travel WHERE user_id = ${user.user_id};`;
     db.task('get-everything', task=>{
-      return task.batch([task.any(fetchTravelData),task.any(fetchEmissionTotal)]);
+      return task.batch([task.any(fetchTravelData),task.any(fetchFoodData),task.any(fetchHouseholdData),task.any(fetchEmissionTotal)]);
     })
     .then(data=>{
       let trips = data[0];
-      let total = data[1];
+      let foods = data[1];
+      let households = data[2];
+      let total = data[3];
       console.log(trips);
       console.log(total);
-      res.render('pages/profile.ejs', {user: user, userTrip: trips, emissionTotal: total, editing: isUser});
+      res.render('pages/profile.ejs', {user: user, userTrip: trips, foodData: foods ,householdData: households, emissionTotal: total, editing: isUser});
     })
   })
   .catch(err =>{
