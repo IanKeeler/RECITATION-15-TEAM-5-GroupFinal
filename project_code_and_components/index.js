@@ -98,18 +98,20 @@ app.get('/login', (req,res)=>{
   res.render('pages/login.ejs');
 });
 
-app.post('/login', (req,res)=>{
+app.post('/login', async (req,res)=>{
+  // adjust string to account for ' characters
+  let username = await editString(req.body.username);
 
   // ACTUAL db query
-  const person = `SELECT * FROM users WHERE username = '${req.body.username}';`;
+  const person = `SELECT * FROM users WHERE username = '${username}';`;
   
   db.any(person)
   .then(async data=>{
     // check if user has registered
     console.log('data retrieved from user fetch:::::', data);
     if(!data[0]){
-      console.log('no user found; redirecting to register');
-      res.redirect('/register');
+      console.log('no user found; throwing error');
+      throw Error('Incorrect username or password.');
       
     // user actually found
     } else {
@@ -130,7 +132,7 @@ app.post('/login', (req,res)=>{
         res.redirect('/home');
       }else{
         console.log('passwords didn\'t match');
-        throw Error('Incorrect password');
+        throw Error('Incorrect username or password.');
       }
     }
   })

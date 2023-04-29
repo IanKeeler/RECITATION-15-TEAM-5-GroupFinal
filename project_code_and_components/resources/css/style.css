@@ -116,22 +116,31 @@ hr{
 /* page specific --------------------------------------- */
 
 /* login --------------------------------------- */
-.credential-form{
-    width: 50%;
-    display: grid;
-    column-gap: 3rem;
-    row-gap: 0.5rem;
-    grid-template-columns: 0.3fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+#login-card{
+    margin: 3rem 35vw 0 35vw;
+    width: 30vw;
+    color: #6c757d;
 }
 
-.login-register-box{
-    display: grid;
-    grid-template-columns: 0.4fr 2fr;
+#login-img{
+    margin-top: 2rem;
+    width: 20vw;
+    padding-left: 10vw;
 }
 
-.log-reg-img{
+#login-form{
     width: 100%;
+    display: grid;
+    grid-template-columns: 0.2fr 0.98fr;
+    column-gap: 1rem;
+    row-gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+}
+
+#login-reroute-register{
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 /* registration --------------------------------------- */

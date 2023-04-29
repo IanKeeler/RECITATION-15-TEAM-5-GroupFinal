@@ -1,22 +1,22 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
-<main class = "content">
+<main id = "login-card">
     <%- include ('../partials/message') %>
-    <div class = "login-register-box">
-        <img src = "img/logo_icon.png" class = "log-reg-img">
-        <form action = "/login" method = "POST" class = "credential-form">
-            <h3>Welcome</h3>
-            <br>
-            
-            <label for = "username"> Username </label>
-            <input type = "text" name = "username" id = "username">
+    <div class = "card">
+        <img src = "img/logo_icon.png" class = "card-img-top" id = "login-img">
+        <div class = "card-body">
+            <h2>Login to GreenChallenge</h2>
+            <form action = "/login" method = "POST" id = "login-form">
+                <label for = "username"> Username </label>
+                <input type = "text" name = "username" id = "username" maxlength = "20" required>
 
-            <label for = "password"> Password </label>
-            <input type = "password" name = "password" id = "password">
+                <label for = "password"> Password </label>
+                <input type = "password" name = "password" id = "password" required>
 
-            <button type = "submit" class = "btn btn-outline-primary">Login</button>
-            <div>Don't have an account?  <a href = "/register">Register.</a></div>
-        </form>
+                <button type = "submit" class = "btn btn-outline-primary">Login</button>
+                <div id = "login-reroute-register">Don't have an account?  <a href = "/register">Register.</a></div>
+            </form>
+        </div>
     </div>
 </main>
 <%- include ('../partials/footer') %>
