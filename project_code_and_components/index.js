@@ -302,6 +302,7 @@ app.get('/leaderboard', (req, res) => {
     .then((leaders) => {
       res.render('pages/leaderboard.ejs', {
         leaders,
+        user: USERNAME
       });
     });
 });
