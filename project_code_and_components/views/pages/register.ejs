@@ -1,20 +1,46 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navbar') %>
-<main class = "content login-register-box">
-    <%- include ('../partials/message') %>
-    <img src = "img/logo_icon.png" class = "log-reg-img">
-    <form action = "/register" method = "POST" class = "credential-form">
-        <h3>Register</h3>
-        <br>
-        
-        <label for = "username"> Username </label>
-        <input type = "text" name = "username" id = "username">
+<main class = "content-register">
+    <% if(locals.hasError){ %>
+        <div id = "offset-message-register"> <%- include ('../partials/message') %> </div>
+    <% } %>
+    <div class = "registration-welcome">
+        <img src = "img/logo_icon.png" class = "registration-logo">
+        <div class = "registration-welcome-text">
+            <h1>Welcome to GreenChallenge</h1>
+            <div>Already have an account?  <a href = "/login">Login</a></div>
+        </div>
+        <div id = "registration-about">
+            <h6>About Us</h6>
+            <ul>
+                <li><a class = "dark-link" href = "">What is GreenChallenge?</a></li>
+                <li><a class = "dark-link" href = "https://github.com/IanKeeler/RECITATION-15-TEAM-5-GroupFinal">Github</a></li>
+            </ul>
+        </div>
+        <form action = "/register" method = "POST" class = "">
+            <label for = "username"><h3> Username </h3></label>
+            <p>This will be the name that other users will see and identify you by.</p>
+            <ul>
+                <li>Username cannot exceed 20 characters.</li>
+                <li>Username must be unique.</li>
+                <li>Please use an appropriate username.</li>  
+            </ul>
+            <input type = "text" class = "registration-input" name = "username" id = "username" maxlength = "20" required>
+    
+            <br><br><br>
 
-        <label for = "password"> Password </label>
-        <input type = "password" name = "password" id = "password">
+            <label for = "password"><h3> Password </h3></label>
+            <ul>
+                <li>Use a secure password.</li>
+                <li>Do not share this with anyone else.</li>
+                <li>You must remember this password.</li>
+            </ul>
+            <input type = "password" class = "registration-input" name = "password" id = "password" required>
+    
+            <br><br>
 
-        <button type = "submit" class = "btn btn-outline-primary">Register</button>
-        <div>Already have an account?  <a href = "/login">Login</a></div>
-    </form>
+            <button type = "submit" class = "btn btn-outline-primary force-right">Register</button>
+        </form>
+    </div>
 </main>
 <%- include ('../partials/footer') %>

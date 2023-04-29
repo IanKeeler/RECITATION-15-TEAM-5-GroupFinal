@@ -25,14 +25,35 @@ a:active{
     text-decoration: none;
 }
 
+.dark-link{
+    color: #6c757d;
+    text-decoration: underline;
+}
+
+.dark-link:hover{
+    color: #343a40;
+    text-decoration: none;
+}
+
+.dark-link:active{
+    color: #6c757d;
+    text-decoration: none
+}
+
+
 hr{
     color: black;
 }
 
-/* content container --------------------------------------- */
+/* content container, formatting --------------------------------------- */
 .content{
     margin: 3rem;
     color: #6c757d;
+}
+
+.force-right{
+    position: absolute;
+    right: 8rem;
 }
 
 /* navbar --------------------------------------- */
@@ -43,14 +64,18 @@ hr{
 
 /* boxes --------------------------------------- */
 .box{
-    background-color: #e9eaec;
-    border: 1px solid #a4cb03;
+    background-color: #0000000d;
+    border: 1px solid #dee2e6;
     color: #343a40;
     border-radius: 5px;
     padding: 1rem;
 }
 
 /* tables --------------------------------------- */
+.box-table-row{
+    background-color: #fcfffe;
+}
+
 .td-vertical-center{
     vertical-align: middle;
 }
@@ -90,7 +115,7 @@ hr{
 
 /* page specific --------------------------------------- */
 
-/* login/register --------------------------------------- */
+/* login --------------------------------------- */
 .credential-form{
     width: 50%;
     display: grid;
@@ -109,10 +134,44 @@ hr{
     width: 100%;
 }
 
+/* registration --------------------------------------- */
+.registration-welcome{
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+    column-gap: 3rem;
+}
+
+.registration-logo{
+    width: 100%;
+}
+
+.registration-welcome-text{
+    padding: 7rem 0;
+}
+
+.content-register{
+    padding-left: 3rem;
+    padding-right: 3rem;
+    padding-bottom: 6rem;
+    color: #6c757d;
+}
+
+.registration-input{
+    width: 50%;
+}
+
+#offset-message-register{
+    padding-top: 3rem;
+}
+
+#registration-about{
+    border-right: 1px solid #198754;
+}
+
 /* home --------------------------------------- */
 /* same styling as links */
 #tip-dismissal{
-    color: #198754;
+    color: #a4cb03;
     text-decoration: underline;
 }
 
@@ -191,9 +250,4 @@ hr{
     width: 100%;
     border-radius: 0.3rem;
     border: 1px solid #aeaeae;
-}
-
-.force-right{
-    position: absolute;
-    right: 8rem;
 }
