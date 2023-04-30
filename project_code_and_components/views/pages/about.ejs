@@ -1,0 +1,36 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/navbar') %>
+<main class = "content">
+    <div id = "about-welcome">
+        <img src = "img/logo_icon.png" id = "about-logo">
+        <h1 id = "about-header">What is GreenChallenge?</h1>
+    </div>
+    <hr>
+    <p>
+        GreenChallenge is a final project for CSCI 3308 at CU Boulder.  
+        It allows users to track their carbon emissions based on putting entries into a log, 
+        computing a score that allows users to compare themselves to and compete against to other users.
+    </p>
+
+    <br>
+
+    <h3>Carbon Score</h3>
+    <p>
+        Carbon score acts similar to a credit score, where users start at a base value of 500 which 
+        increases with harmful activities and decreases with helpful activities.  
+        A user's carbon score can at maximum hit 1000 and at minimum can decrease to 1.  
+        Various activities impact carbon score differently, both by some increasing and some decreasing 
+        a user's score, and by having different weights assigned to them.
+    </p>
+
+    <br>
+    <h3>Team (The SustainaBuddies)</h3>
+    <ul>
+        <li>Ben Gardner</li>
+        <li>Ian Keeler</li>
+        <li>Ethan Nguyen</li>
+        <li>Joe Powers Dechar</li>
+        <li>Dayn Reoh</li>
+    </ul>
+</main>
+<%- include ('../partials/footer') %>
