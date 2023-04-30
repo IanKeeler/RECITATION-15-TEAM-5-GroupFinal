@@ -284,3 +284,7 @@ hr{
     border-radius: 0.3rem;
     border: 1px solid #aeaeae;
 }
+
+#edit-description{
+    --bs-modal-width: 50%;
+}
