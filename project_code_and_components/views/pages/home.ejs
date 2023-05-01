@@ -6,7 +6,7 @@
   <div id = "tip-box">
     <div class = "box">
         <strong>Tip: </strong><%= tip %>
-        <span id = "tip-dismissal">Dismiss</span>
+        <span class = "dark-link" id = "tip-dismissal">Dismiss</span>
     </div>
   </div>
   <br>
@@ -15,8 +15,8 @@
   <h1>Welcome to GreenChallenge, <strong><%= user %></strong></h1>
   <p>
     Welcome to GreenChallenge!  Game-ify and track your carbon emissions
-    by entering tasks you do in your day-to-day life and checking their emissions. 
-    <a href = "/log">Get started by putting an entry to your log.</a>
+    by entering tasks you do in your day-to-day life and checking their emissions.  
+    <a href = "/about">What is GreenChallenge?</a>
   </p>
   <br>
 
@@ -66,16 +66,6 @@
   <!-- GLOBAL STATS ------------------------------------------- -->
   <h3>Global Stats</h3>
   <div class = "stat-container">
-    
-    <!-- total users -->
-    <div class="card" style="width: 18rem;">
-      <div class="card-body">
-        <h5 class="card-title"><%= popGlobal %></h5>
-        <h6 class="card-subtitle mb-2 text-muted">Users</h6>
-        <p class="card-text">Number of active accounts</p>
-      </div>
-    </div>
-
     <!-- total log entries -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
@@ -100,6 +90,15 @@
         <h5 class="card-title"><%= avgCarbonscoreGlobal %></h5>
         <h6 class="card-subtitle mb-2 text-muted">Carbon score</h6>
         <p class="card-text">Average carbon score across users</p>
+      </div>
+    </div>
+
+    <!-- total users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= popGlobal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Users</h6>
+        <p class="card-text">Number of active accounts</p>
       </div>
     </div>
 

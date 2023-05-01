@@ -7,14 +7,17 @@
         <div class = "card-body">
             <h2>Login to GreenChallenge</h2>
             <form action = "/login" method = "POST" id = "login-form">
-                <label for = "username"> Username </label>
-                <input type = "text" name = "username" id = "username" maxlength = "20" required>
+                <div id = "login-input">
+                    <label for = "username"> Username </label>
+                    <input type = "text" name = "username" id = "username" maxlength = "20" required>
 
-                <label for = "password"> Password </label>
-                <input type = "password" name = "password" id = "password" required>
-
-                <button type = "submit" class = "btn btn-outline-primary">Login</button>
-                <div id = "login-reroute-register">Don't have an account?  <a href = "/register">Register.</a></div>
+                    <label for = "password"> Password </label>
+                    <input type = "password" name = "password" id = "password" required>
+                </div>
+                <div id = "login-submit">
+                    <div id = "login-reroute-register">Don't have an account?  <a href = "/register">Register.</a></div>
+                    <button type = "submit" class = "btn btn-outline-primary">Login</button>
+                </div>
             </form>
         </div>
     </div>

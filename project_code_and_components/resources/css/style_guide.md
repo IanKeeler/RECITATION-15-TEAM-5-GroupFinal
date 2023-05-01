@@ -10,10 +10,10 @@ This document contains information on the following:
 - Partials
 - Using local assets
 - Copy-able Hex Values
-- Containing page content
+- Containing Page Content
 - Colored boxes
-- Buttons
-- Images for use of icons
+- Buttons and Links
+- Images (for use of icons)
 - Tables
 
 It isn't necessary to read the entire thing to parse a section.
@@ -52,10 +52,10 @@ Code that adds certain styling to various HTML elements.  IMPORTANT: when using 
 
 ## Copy-able Hex Values
 
-Note: Hex codes do not include alpha (transparency) channels code and by default are at 100%.
+Note: Hex codes do not here generally include alpha (transparency) channels code and by default are at 100%.
 
 - #fcfffe
-- #e9eaec
+- ##0000000d
 - #cff17a
 - #a4cb03
 - #198754
@@ -86,7 +86,7 @@ Class "box": creates a colored box.
 
 The image displays a link and normal text content in the box, but it can contain anything.
 
-## Buttons
+## Buttons and Links
 
 "Primary" button is meant to be used for most buttons.  "Secondary" button is meant for usage when two options with a hierarchy are given (EX, a prompt with "confirm" or "cancel" options).
 
@@ -97,6 +97,12 @@ The image displays a link and normal text content in the box, but it can contain
 <img src = "class_use_examples/button_example.png">
 
 By default, buttons will appear side-by-side to content if possible (such as each other or text), so additional containers/styling is necessary if forcing them to a new line.
+
+Class "dark-link" turns a link into a darker color, more suitable for darker backgrounds.
+
+    <a class = ".dark-link">...</a>
+
+<img src = "class_use_examples/dark_link_example.png">
 
 ## Icons
 

@@ -194,6 +194,11 @@ app.post('/register', async(req,res)=>{
   })
 })
 
+// about routines --------------------------------------------------
+app.get('/about', (req,res) =>{
+  res.render('pages/about.ejs');
+});
+
 // search routines --------------------------------------------------
 app.get('/search', (req,res) =>{
   res.render('pages/search.ejs');
@@ -225,7 +230,7 @@ app.post('/search', (req,res) =>{
 const auth = (req, res, next) => {
   if (!req.session.user) {
     // Default to login page.
-    return res.redirect('/login');
+    return res.render('pages/login.ejs', {message: 'You must be logged in to view this page.'});
   } 
   next();
 };
@@ -616,7 +621,7 @@ app.get('/logout', (req, res) => {
   // Destroys the session.
   console.log('session destroyed.')
   req.session.destroy();
-  res.render("pages/login");
+  res.render('pages/login', {message: 'Successfully logged out.'});
   USERNAME = '';
 });
 
