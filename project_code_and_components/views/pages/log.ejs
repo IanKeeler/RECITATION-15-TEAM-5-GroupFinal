@@ -145,21 +145,21 @@
                 <div style="<% if (travelEmissions == null) { %> display: none;<% } %>">
                     <div>
                         <h5>Travel Entry</h5> 
-                        <strong>CO<sub>2</sub>:</strong> <%= travelEmissions != null ? travelEmissions.co2e.toFixed(3) + " "  + travelEmissions.units : "none" %>
+                        <span class = "log-result"><strong>CO<sub>2</sub>:</strong> <%= travelEmissions != null ? travelEmissions.co2e.toFixed(3) + " "  + travelEmissions.units : "none" %></span>
                     </div>
                 </div>
 
                 <div style="<% if (householdEmissions == null) { %> display: none;<% } %>">
                     <div>
                         <h5>Household Entry</h5> 
-                        CO2: <%= householdEmissions != null ? householdEmissions.toFixed(3) + " kg" : "none" %>
+                        <span class = "log-result"><strong>CO<sub>2</sub>:</strong> <%= householdEmissions != null ? householdEmissions.toFixed(3) + " kg" : "none" %></span>
                     </div>
                 </div>
 
                 <div style="<% if (foodEmissions == null) { %> display: none;<% } %>">
                     <div>
                         <h5>Food Entry</h5> 
-                        CO2: <%= foodEmissions != null ? foodEmissions.toFixed(3) + " kg" : "none" %>
+                        <span class = "log-result"><strong>CO<sub>2</sub>:</strong> <%= foodEmissions != null ? foodEmissions.toFixed(3) + " kg" : "none" %></span>
                     </div>
                 </div>
             <% } %>
