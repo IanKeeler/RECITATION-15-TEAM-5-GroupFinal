@@ -2,7 +2,7 @@ function togglePassengers() {
     const travelMode = document.getElementById("travel_mode").value;
     const passengersText = document.getElementById("passengers-label");
     const passengersBox = document.getElementById("passengers");
-    if(travelMode == "car" || travelMode == "bus") {
+    if(travelMode == "car") {
         passengersText.classList.remove("hidden");
         passengersBox.classList.remove("hidden");
     } else {

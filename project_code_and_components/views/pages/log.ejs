@@ -40,14 +40,15 @@
                         <option value="bus">Bus</option>
                         <option value="train">Train</option>
                         <option value="airplane">Airplane</option>
+                        <option value="walking">Walking</option>
+                        <option value="biking">Biking</option>
                     </select>  
     
                     <label for="passengers" class = "hidden" id = "passengers-label">Passengers</label>
-                    <input type="text" id="passengers" name="passengers" class = "hidden" required pattern = "[0-9]+">
+                    <input type="text" id="passengers" name="passengers" class = "hidden" pattern = "[0-9]+">
                 
                     <label for="distance">Distance Traveled (mi): </label>
                     <input type="text" id="distance" name="distance" required pattern = "[0-9]+"> 
-                
                 
                     <label for="travel_date">Date:</label>
                     <input type="date" id="travel_date" name="travel_date" required>
