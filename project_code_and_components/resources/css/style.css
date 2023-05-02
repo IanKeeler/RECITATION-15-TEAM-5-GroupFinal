@@ -56,6 +56,10 @@ hr{
     right: 8rem;
 }
 
+.hidden{
+    display: none;
+}
+
 /* navbar --------------------------------------- */
 .navbar{
     background-color: #cff17a !important;
@@ -232,6 +236,46 @@ hr{
     cursor: pointer;
 }
 
+/* log page --------------------------------------- */
+#log-disclaimer{
+    padding-top: 0.5rem;
+}
+
+#log-wrapper{
+    display: grid;
+    grid-template-columns: 0.7fr 0.3fr;
+    column-gap: 2rem;
+}
+
+#log-results-wrapper{
+    background-color: #fcfffe;
+    color: #6c757d;
+}
+
+#outer-box{
+    background-color: #fcfffe;
+    border: none;
+    padding-left: 0;
+}
+
+#log-type-box{
+    margin-top: 0.5rem;
+}
+
+#log-button-position{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 0.15fr;
+}
+
+.log-input-container{
+    display: grid;
+    grid-template-columns: 0.7fr 1fr;
+    width: 70%;
+    column-gap: 0.3rem;
+    padding-left: 1rem;
+}
+
 /* search --------------------------------------- */
 
 .search-table{
@@ -288,9 +332,4 @@ hr{
 
 #edit-description{
     --bs-modal-width: 50%;
-}
-
-/* log page --------------------------------------- */
-.hidden{
-    display: none;
 }
