@@ -1,57 +1,12 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/navbar') %>
-<head>
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
-    <script>
-        function togglePassengers() {
-            const travelMode = document.getElementById("travel_mode").value;
-            const extraInput = document.getElementById("extra_input")
-            if(travelMode == "car" || travelMode == "bus") {
-                extraInput.classList.remove("hidden")
-            } else {
-                extraInput.classList.add("hidden")
-            }
-        }
-        function showMode(){
-            const inputMode = document.getElementById("input_mode").value;
-            const travelForm = document.getElementById("travel")
-            const electricForm = document.getElementById("household")
-            const freightForm = document.getElementById("food")
-            const outerBox = document.getElementById("outer-box")
-            if(inputMode == "travel"){
-                travelForm.classList.remove("hidden")
-                electricForm.classList.add("hidden")
-                freightForm.classList.add("hidden")
-                outerBox.style.display = ""
-            }
-            if(inputMode == "household"){
-                travelForm.classList.add("hidden")
-                electricForm.classList.remove("hidden")
-                freightForm.classList.add("hidden")
-                outerBox.style.display = ""
-            }
-            if(inputMode == "food"){
-                travelForm.classList.add("hidden")
-                freightForm.classList.remove("hidden")
-                electricForm.classList.add("hidden")
-                outerBox.style.display = "";
-            }
-        }
-    </script>
-</head>
-<body>
-    <main>
+    <script defer src = "../js/log.js"></script>
+    <main class = "content">
         <%- include ('../partials/message') %>
-        <div class="content">
-            <h1 style="text-align: center">Input Personal Usage For Each Category</h1>
-        </div>
+        <h1>Log Entries</h1>
 
-        <div class="content box" style="text-align: left">
-            <label for="input_mode">Input Mode </label>
+        <div class="box">
+            <label for="input_mode">Entry Type: </label>
 
             <select id="input_mode" name="input_mode" onchange="showMode()">
                 <option value="" selected disabled>Select</option>
@@ -60,7 +15,8 @@
                 <option value="food">Food</option>
             </select>
         </div>
-        <div class="content box" id="outer-box" style="text-align: left; display: none;">
+        <br>
+        <div class="box" id="outer-box" style="display: none;">
 
             <!-- Travel Input -->
             <form id="travel" class="hidden" action="/travel_log" method="POST">
@@ -89,7 +45,7 @@
                     <input type="date" id="travel_date" name="travel_date">
                 </div>
                 <br>
-                <button type="submit" class = "btn btn-outline-primary">Submit</button>
+                <button type="submit" class = "btn btn-outline-success">Submit</button>
             </form>
 
             <!-- Household Input -->
@@ -129,7 +85,7 @@
                     <input type="date" id="household_date" name="household_date">
                 </div>
                 <br>
-                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
+                <button type = "submit" class = "btn btn-outline-success">Submit</button>
             </form>
 
             <!-- Food Input -->
@@ -153,7 +109,7 @@
                     <input type="date" id="food_date" name="food_date">
                 </div>
                 <br>
-                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
+                <button type = "submit" class = "btn btn-outline-success">Submit</button>
             </form>
 
         <!-- Printing results  -->
@@ -186,5 +142,4 @@
         </div>
 
     </main>
-</body>
 <%- include ('../partials/footer') %>
