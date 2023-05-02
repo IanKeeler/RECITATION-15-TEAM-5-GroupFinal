@@ -103,6 +103,236 @@
     </div>
 
   </div>
+  <br><br>
+
+  <!-- TRAVEL STATS ------------------------------------------- -->
+  <h3>Your Travel Stats</h3>
+  <div class = "stat-container">
+    <!-- total miles traveled -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= milesTotal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Your total miles traveled</p>
+      </div>
+    </div>
+
+    <!-- total travel emissions -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= travelEmissionsTotal %> kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Your carbon emissions from travel</p>
+      </div>
+    </div>
+
+    <!-- most emitting vehicle -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= maxEmissionVehicle %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
+        <p class="card-text">Your most carbon emitting mode of transportation</p>
+      </div>
+    </div>
+
+    <!-- most commonly used vehicle -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= popularVehicle %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
+        <p class="card-text">Your most commonly used mode of transportation</p>
+      </div>
+    </div>
+
+  </div>
+  <br><br>
+
+  <h3>Global Travel Stats</h3>
+  <div class = "stat-container">
+    <!-- total miles traveled for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= milesGlobal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Total miles traveled across all users</p>
+      </div>
+    </div>
+
+    <!-- total travel emissions for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= travelEmissionsGlobal %> kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Carbon emissions from travel across all users</p>
+      </div>
+    </div>
+
+    <!-- most emitting vehicle for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= maxEmissionVehicleGlobal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
+        <p class="card-text">Most carbon emitting mode of transportation across all users</p>
+      </div>
+    </div>
+
+    <!-- most used vehicle for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= popularVehicleGlobal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
+        <p class="card-text">Most commonly used mode of transportation across all users</p>
+      </div>
+    </div>
+
+  </div>
+  <br><br>
+
+  <h3>Your Food Stats</h3>
+  <div class = "stat-container">
+    <!-- total food emissions -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= foodEmissionsTotal %> kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Your carbon emissions from food</p>
+      </div>
+    </div>
+
+    <!-- total spent on beef -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">$<%= beefTotal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Spending</h6>
+        <p class="card-text">Your total spending on beef</p>
+      </div>
+    </div>
+
+    <!-- total spent on dairy -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">$<%= dairyTotal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Spending</h6>
+        <p class="card-text">Your total spending on dairy</p>
+      </div>
+    </div>
+
+    <!-- total spent on fruits -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">$<%= fruitsTotal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Spending</h6>
+        <p class="card-text">Your total spending on fruit</p>
+      </div>
+    </div>
+
+  </div>
+  <br><br>
+
+  <h3>Global Food Stats</h3>
+  <div class = "stat-container">
+    <!-- total food emissions for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= foodEmissionsGlobal %> kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Carbon emissions from food across all users</p>
+      </div>
+    </div>
+
+    <!-- total spent on beef for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">$<%= beefGlobal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Spending</h6>
+        <p class="card-text">Total spending on beef across all users</p>
+      </div>
+    </div>
+
+    <!-- total spent on dairy for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">$<%= dairyGlobal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Spending</h6>
+        <p class="card-text">Total spending on dairy across all users</p>
+      </div>
+    </div>
+
+    <!-- total spent on fruits for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">$<%= fruitsGlobal %></h5>
+        <h6 class="card-subtitle mb-2 text-muted">Spending</h6>
+        <p class="card-text">Total spending on fruit across all users</p>
+      </div>
+    </div>
+
+  </div>
+  <br><br>
+
+  <h3>Your Household Stats</h3>
+  <div class = "stat-container">
+    <!-- total household emissions -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= houseEmissionsTotal %> kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Your carbon emissions from household utilities</p>
+      </div>
+    </div>
+
+    <!-- total electricity used -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= electricityTotal %> kWh</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Utility Use</h6>
+        <p class="card-text">Your total kilowatt-hours of electricity used</p>
+      </div>
+    </div>
+
+    <!-- total water used -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= waterTotal %> gal</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Utility Use</h6>
+        <p class="card-text">Your total gallons of water used</p>
+      </div>
+    </div>
+
+  </div>
+  <br><br>
+
+  <h3>Global Household Stats</h3>
+  <div class = "stat-container">
+    <!-- total household emissions for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= houseEmissionsGlobal %> kg</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
+        <p class="card-text">Carbon emissions from household utilities across all users</p>
+      </div>
+    </div>
+
+    <!-- total electricity used for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= electricityGlobal %> kWh</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Utility Use</h6>
+        <p class="card-text">Total kilowatt-hours of electricity used across all users</p>
+      </div>
+    </div>
+
+    <!-- total water used for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= waterGlobal %> gal</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Utility Use</h6>
+        <p class="card-text">Total gallons of water used across all users</p>
+      </div>
+    </div>
+
+  </div>
+
 </main>
 
 <script>
