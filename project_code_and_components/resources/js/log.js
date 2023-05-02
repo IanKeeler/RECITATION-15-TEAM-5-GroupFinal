@@ -5,9 +5,12 @@ function togglePassengers() {
     if(travelMode == "car") {
         passengersText.classList.remove("hidden");
         passengersBox.classList.remove("hidden");
+        passengersBox.setAttribute("required", "true");
+
     } else {
         passengersText.classList.add("hidden");
         passengersBox.classList.add("hidden");
+        passengersBox.setAttribute("required");
     }
 }
 function showMode(){
