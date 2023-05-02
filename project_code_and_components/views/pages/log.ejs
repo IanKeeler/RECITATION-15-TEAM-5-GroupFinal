@@ -43,10 +43,10 @@
                     </select>  
     
                     <label for="passengers" class = "hidden" id = "passengers-label">Passengers</label>
-                    <input type="text" id="passengers" name="passengers" class = "hidden" required>
+                    <input type="text" id="passengers" name="passengers" class = "hidden" required pattern = "[0-9]+">
                 
                     <label for="distance">Distance Traveled (mi): </label>
-                    <input type="text" id="distance" name="distance" required> 
+                    <input type="text" id="distance" name="distance" required pattern = "[0-9]+"> 
                 
                 
                     <label for="travel_date">Date:</label>
@@ -67,13 +67,13 @@
                     <h5 style="color: #a4cb03">Electricity</h5>
                     <div class = "log-input-container">
                         <label for="light">Household Light Usage (hr):</label>
-                        <input type="text" id="light" name="light" required> 
+                        <input type="text" id="light" name="light" required pattern = "[0-9]+"> 
 
                         <label for="heat">Household Heat Usage(hr):</label>
-                        <input type="text" id="heat" name="heat" required> 
+                        <input type="text" id="heat" name="heat" required pattern = "[0-9]+"> 
                     
                         <label for="phone">Phone Usage(hr):</label>
-                        <input type="text" id="phone" name="phone" required> 
+                        <input type="text" id="phone" name="phone" required pattern = "[0-9]+"> 
                     </div>
                 </div>
 
@@ -82,10 +82,10 @@
                     <h5 style="color: #a4cb03">Water Usage</h5>
                     <div class = "log-input-container">
                         <label for="shower">Time Spent Showering(min):</label>
-                        <input type="text" id="shower" name="shower" required> 
+                        <input type="text" id="shower" name="shower" required pattern = "[0-9]+"> 
                     
                         <label for="toilet">Number of Toilet Flushes:</label>
-                        <input type="text" id="toilet" name="toilet" required> 
+                        <input type="text" id="toilet" name="toilet" required pattern = "[0-9]+"> 
                     </div>
                 </div>
 
@@ -109,13 +109,13 @@
                 <hr>
                 <div class = "log-input-container">
                     <label for="beef">Money Spent on Beef($):</label>
-                    <input type="text" id="beef" name="beef" required> 
+                    <input type="text" id="beef" name="beef" required pattern = "[0-9]+(\.){0,1}[0-9]{2}"> 
 
                     <label for="dairy">Money Spent on Dairy($):</label>
-                    <input type="text" id="dair" name="dairy" required> 
+                    <input type="text" id="dair" name="dairy" required pattern = "[0-9]+(\.){0,1}[0-9]{2}"> 
 
                     <label for="fruits">Money Spent on Greens($):</label>
-                    <input type="text" id="fruits" name="fruits" required> 
+                    <input type="text" id="fruits" name="fruits" required pattern = "[0-9]+(\.){0,1}[0-9]{2}"> 
                 </div>
 
                 <br>
