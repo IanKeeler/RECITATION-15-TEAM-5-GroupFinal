@@ -34,7 +34,7 @@
                 <hr>
                 <div class = "log-input-container">
                     <label for="travel_mode">Travel Mode:</label>
-                    <select id="travel_mode" name="travel_mode" onchange="togglePassengers()">
+                    <select id="travel_mode" name="travel_mode" onchange="togglePassengers()" required>
                         <option value="" selected disabled>Select</option>
                         <option value="car">Car</option>
                         <option value="bus">Bus</option>
@@ -43,14 +43,14 @@
                     </select>  
     
                     <label for="passengers" class = "hidden" id = "passengers-label">Passengers</label>
-                    <input type="text" id="passengers" name="passengers" class = "hidden">
+                    <input type="text" id="passengers" name="passengers" class = "hidden" required>
                 
                     <label for="distance">Distance Traveled (mi): </label>
-                    <input type="text" id="distance" name="distance"> 
+                    <input type="text" id="distance" name="distance" required> 
                 
                 
                     <label for="travel_date">Date:</label>
-                    <input type="date" id="travel_date" name="travel_date">
+                    <input type="date" id="travel_date" name="travel_date" required>
                 </div>
                 <br>
                 <div id = "log-button-position">
@@ -67,13 +67,13 @@
                     <h5 style="color: #a4cb03">Electricity</h5>
                     <div class = "log-input-container">
                         <label for="light">Household Light Usage (hr):</label>
-                        <input type="text" id="light" name="light"> 
+                        <input type="text" id="light" name="light" required> 
 
                         <label for="heat">Household Heat Usage(hr):</label>
-                        <input type="text" id="heat" name="heat"> 
+                        <input type="text" id="heat" name="heat" required> 
                     
                         <label for="phone">Phone Usage(hr):</label>
-                        <input type="text" id="phone" name="phone"> 
+                        <input type="text" id="phone" name="phone" required> 
                     </div>
                 </div>
 
@@ -82,10 +82,10 @@
                     <h5 style="color: #a4cb03">Water Usage</h5>
                     <div class = "log-input-container">
                         <label for="shower">Time Spent Showering(min):</label>
-                        <input type="text" id="shower" name="shower"> 
+                        <input type="text" id="shower" name="shower" required> 
                     
                         <label for="toilet">Number of Toilet Flushes:</label>
-                        <input type="text" id="toilet" name="toilet"> 
+                        <input type="text" id="toilet" name="toilet" required> 
                     </div>
                 </div>
 
@@ -93,7 +93,7 @@
                 <h5>Other Information</h5>
                 <div class = "log-input-container">
                     <label for="household_date">Date:</label>
-                    <input type="date" id="household_date" name="household_date">
+                    <input type="date" id="household_date" name="household_date" required>
                 </div>
                 <br>
 
@@ -109,19 +109,19 @@
                 <hr>
                 <div class = "log-input-container">
                     <label for="beef">Money Spent on Beef($):</label>
-                    <input type="text" id="beef" name="beef"> 
+                    <input type="text" id="beef" name="beef" required> 
 
                     <label for="dairy">Money Spent on Dairy($):</label>
-                    <input type="text" id="dair" name="dairy"> 
+                    <input type="text" id="dair" name="dairy" required> 
 
                     <label for="fruits">Money Spent on Greens($):</label>
-                    <input type="text" id="fruits" name="fruits"> 
+                    <input type="text" id="fruits" name="fruits" required> 
                 </div>
 
                 <br>
                 <div class = "log-input-container">
                     <label for="food_date">Date</label>
-                    <input type="date" id="food_date" name="food_date">
+                    <input type="date" id="food_date" name="food_date" required>
                 </div>
                 <br>
                 
