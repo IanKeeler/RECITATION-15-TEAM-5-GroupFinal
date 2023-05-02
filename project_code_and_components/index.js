@@ -66,9 +66,17 @@ app.use(
 let USERNAME = '';
 let travelID = '';
 
+// prevents ' character from messing with strings
+async function editString(string){
+  string = string.replace(/'/g, '\'\'');
+  console.log('EDITED STRING:::', string);
+
+  return string;
+}
+
 // temporary default route, probably changing to home page later
 app.get('/', (req,res)=>{
-    res.redirect('/log');
+    res.redirect('/home');
 });
 
 // force hashes to forcibly add users thru create.sql: change variable 'password' and load api route; will show before proper stuff for login page
@@ -90,18 +98,20 @@ app.get('/login', (req,res)=>{
   res.render('pages/login.ejs');
 });
 
-app.post('/login', (req,res)=>{
+app.post('/login', async (req,res)=>{
+  // adjust string to account for ' characters
+  let username = await editString(req.body.username);
 
   // ACTUAL db query
-  const person = `SELECT * FROM users WHERE username = '${req.body.username}';`;
+  const person = `SELECT * FROM users WHERE username = '${username}';`;
   
   db.any(person)
   .then(async data=>{
     // check if user has registered
     console.log('data retrieved from user fetch:::::', data);
     if(!data[0]){
-      console.log('no user found; redirecting to register');
-      res.redirect('/register');
+      console.log('no user found; throwing error');
+      throw Error('Incorrect username or password.');
       
     // user actually found
     } else {
@@ -122,7 +132,7 @@ app.post('/login', (req,res)=>{
         res.redirect('/home');
       }else{
         console.log('passwords didn\'t match');
-        throw Error('Incorrect password');
+        throw Error('Incorrect username or password.');
       }
     }
   })
@@ -145,32 +155,49 @@ app.get('/register', (req,res)=>{
 app.post('/register', async(req,res)=>{
   // add to user table
   const passwordHash = await bcrypt.hash(req.body.password, 10);
+  let processedUsername = await editString(req.body.username);
 
   // default carbonscore/weight factor
   let carbonScore = 50;
   let weightFactor = 1;
 
-  // insert into db
-  let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
-  db.any(query, [
-    req.body.username,
-    passwordHash,
-    weightFactor,
-    carbonScore,
-    ''
+  let checkUser = 'SELECT username FROM users WHERE username = $1;';
+  db.any(checkUser, [
+    processedUsername
   ])
   .then(function(data){
-    console.log('data::::', data);
-    console.log('registration successful');
-    res.status(200);
-    res.redirect('/login');
+    console.log('USERNAME RETRIEVE::::', data)
+    if(Object.keys(data).length != 0){
+      console.log('USERNAME CHECKED AS EXISTENT');
+      throw Error('Username taken. Please choose another username.');
+
+    }else{
+      // insert into db
+      let query = 'INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore, user_description) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
+      db.any(query, [
+        processedUsername,
+        passwordHash,
+        weightFactor,
+        carbonScore,
+        ''
+      ])
+      .then(function(data){
+        console.log('data::::', data);
+        console.log('registration successful');
+        res.redirect('/login');
+      })
+    }
   })
   .catch(err=>{
     console.log(err);
-    res.status(400);
-    res.redirect('/register');
+    res.render('pages/register.ejs', {message: err, hasError: true});
   })
 })
+
+// about routines --------------------------------------------------
+app.get('/about', (req,res) =>{
+  res.render('pages/about.ejs');
+});
 
 // search routines --------------------------------------------------
 app.get('/search', (req,res) =>{
@@ -203,7 +230,7 @@ app.post('/search', (req,res) =>{
 const auth = (req, res, next) => {
   if (!req.session.user) {
     // Default to login page.
-    return res.redirect('/login');
+    return res.render('pages/login.ejs', {message: 'You must be logged in to view this page.'});
   } 
   next();
 };
@@ -247,41 +274,272 @@ app.get('/home', async(req,res) => {
   const userID = await db.any(getUserID);
 
   // queries to populate user stats
-  let fetchEntriesTotal = `SELECT COUNT(*) AS total_entries FROM (SELECT user_id FROM travel WHERE user_id = $1 UNION ALL SELECT user_id FROM food WHERE user_id = $1 UNION ALL SELECT user_id FROM household WHERE user_id = $1) subquery;`;
+  let fetchEntriesTotal = 
+  `SELECT COUNT(*) AS total_entries 
+    FROM
+      (SELECT user_id 
+        FROM travel 
+        WHERE user_id = $1 
+        UNION ALL 
+        SELECT user_id 
+        FROM food 
+        WHERE user_id = $1 
+        UNION ALL 
+        SELECT user_id 
+        FROM household 
+        WHERE user_id = $1) subquery;`;
   const entriesTotal = await db.one(fetchEntriesTotal, [userID[0].user_id]);
 
-  let fetchEmissionsTotal = `SELECT SUM(emissions) AS total_emissions FROM (SELECT emissions FROM travel WHERE user_id = $1 UNION ALL SELECT emissions FROM food WHERE user_id = $1 UNION ALL SELECT emissions FROM household WHERE user_id = $1) subquery;`;
+  let fetchEmissionsTotal = 
+  `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions 
+    FROM 
+      (SELECT emissions 
+        FROM travel 
+        WHERE user_id = $1 
+        UNION ALL 
+        SELECT emissions 
+        FROM food 
+        WHERE user_id = $1 
+        UNION ALL 
+        SELECT emissions 
+        FROM household 
+        WHERE user_id = $1) subquery;`;
   const emissionsTotal = await db.one(fetchEmissionsTotal, [userID[0].user_id]);
 
-  let fetchCarbonScore = `SELECT user_carbonscore FROM users WHERE user_id = $1;`;
+  let fetchCarbonScore = 
+  `SELECT ROUND(user_carbonscore::numeric, 2) AS user_carbonscore 
+    FROM users 
+    WHERE user_id = $1;`;
   const carbonScore = await db.one(fetchCarbonScore, [userID[0].user_id]);
 
-  let fetchRank = `SELECT row_number FROM (SELECT row_number() OVER(ORDER BY user_carbonscore), user_id, user_carbonscore FROM users) subquery WHERE user_id = $1;`;
+  let fetchRank = 
+  `SELECT row_number 
+    FROM 
+      (SELECT row_number() OVER(ORDER BY user_carbonscore), user_id, user_carbonscore 
+      FROM users) subquery 
+    WHERE user_id = $1;`;
   const userRank = await db.one(fetchRank, [userID[0].user_id]);
 
   // queries to populate global stats
   let fetchPopGlobal = `SELECT COUNT(*) AS population FROM users;`;
   const popGlobal = await db.one(fetchPopGlobal);
 
-  let fetchEntriesGlobal = `SELECT COUNT(*) AS global_entries FROM (SELECT travel_id AS entries FROM travel UNION ALL SELECT food_id AS entries FROM food UNION ALL SELECT household_id AS entries FROM household) subquery;`;
+  let fetchEntriesGlobal = 
+  `SELECT COUNT(*) AS global_entries 
+    FROM 
+      (SELECT travel_id AS entries 
+        FROM travel 
+        UNION ALL 
+        SELECT food_id AS entries 
+        FROM food 
+        UNION ALL 
+        SELECT household_id AS entries 
+        FROM household) subquery;`;
   const entriesGlobal = await db.one(fetchEntriesGlobal);
 
-  let fetchEmissionsGlobal = `SELECT SUM(emissions) AS global_emissions FROM (SELECT emissions FROM travel UNION ALL SELECT emissions FROM food UNION ALL SELECT emissions FROM household) subquery;`;
+  let fetchEmissionsGlobal = 
+  `SELECT ROUND(SUM(emissions)::numeric, 2) AS global_emissions 
+    FROM 
+      (SELECT emissions 
+        FROM travel 
+        UNION ALL 
+        SELECT emissions 
+        FROM food 
+        UNION ALL 
+        SELECT emissions 
+        FROM household) subquery;`;
   const emissionsGlobal = await db.one(fetchEmissionsGlobal);
 
-  let fetchAvgCarbonscoreGlobal = `SELECT AVG(user_carbonscore) AS avg_carbonscore FROM users;`;
+  let fetchAvgCarbonscoreGlobal = `SELECT ROUND(AVG(user_carbonscore)::numeric, 2) AS avg_carbonscore FROM users;`;
   const avgCarbonscoreGlobal = await db.one(fetchAvgCarbonscoreGlobal);
 
-  res.render('pages/home', {tip: tip, user: USERNAME, entriesTotal: entriesTotal.total_entries, emissionsTotal: emissionsTotal.total_emissions, carbonScore: carbonScore.user_carbonscore, userRank: userRank.row_number, popGlobal: popGlobal.population, entriesGlobal: entriesGlobal.global_entries, emissionsGlobal: emissionsGlobal.global_emissions, avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore});
+  // queries to populate travel stats
+
+  let fetchMilesTotal =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+  FROM travel
+  WHERE user_id = $1;`;
+  const milesTotal = await db.one(fetchMilesTotal, [userID[0].user_id]);
+
+  let fetchTravelEmissionsTotal =
+  `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions
+    FROM travel
+    WHERE user_id = $1;`;
+  const travelEmissionsTotal = await db.one(fetchTravelEmissionsTotal, [userID[0].user_id]);
+
+  let fetchMaxEmissionVehicle =
+  `SELECT travel_mode
+    FROM
+      (SELECT travel_mode, SUM(emissions) AS emissions_sum
+        FROM travel
+        WHERE user_id = $1
+        GROUP BY travel_mode
+        ORDER BY emissions_sum DESC
+        LIMIT 1) subquery;`;
+  const maxEmissionVehicle = await db.one(fetchMaxEmissionVehicle, [userID[0].user_id]);
+
+  let fetchPopularVehicle =
+  `SELECT travel_mode
+    FROM
+      (SELECT travel_mode, COUNT(*) AS popularity
+        FROM travel
+        WHERE user_id = $1
+        GROUP BY travel_mode
+        ORDER BY popularity DESC
+        LIMIT 1) subquery;`;
+  const popularVehicle = await db.one(fetchPopularVehicle, [userID[0].user_id]);
+
+  let fetchMilesGlobal = `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles FROM travel;`;
+  const milesGlobal = await db.one(fetchMilesGlobal);
+  
+  let fetchTravelEmissionsGlobal = `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions FROM travel;`;
+  const travelEmissionsGlobal = await db.one(fetchTravelEmissionsGlobal);
+
+  let fetchMaxEmissionVehicleGlobal =
+  `SELECT travel_mode
+    FROM
+      (SELECT travel_mode, SUM(emissions) AS emissions_sum
+        FROM travel
+        GROUP BY travel_mode
+        ORDER BY emissions_sum DESC
+        LIMIT 1) subquery;`;
+  const maxEmissionVehicleGlobal = await db.one(fetchMaxEmissionVehicleGlobal);
+
+  let fetchPopularVehicleGlobal =
+  `SELECT travel_mode
+    FROM
+      (SELECT travel_mode, COUNT(*) AS popularity
+        FROM travel
+        GROUP BY travel_mode
+        ORDER BY popularity DESC
+        LIMIT 1) subquery;`;
+  const popularVehicleGlobal = await db.one(fetchPopularVehicleGlobal);
+
+  // queries to populate food stats
+
+  let fetchFoodEmissionsTotal =
+  `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions
+    FROM food
+    WHERE user_id = $1;`;
+  const foodEmissionsTotal = await db.one(fetchFoodEmissionsTotal, [userID[0].user_id]);
+
+  let fetchBeefTotal =
+  `SELECT ROUND(SUM(beef_bought)::numeric, 2) AS total_beef
+    FROM food
+    WHERE user_id = $1;`;
+  const beefTotal = await db.one(fetchBeefTotal, [userID[0].user_id]);
+
+  let fetchDairyTotal =
+  `SELECT ROUND(SUM(dairy_bought)::numeric, 2) AS total_dairy
+    FROM food
+    WHERE user_id = $1;`;
+  const dairyTotal = await db.one(fetchDairyTotal, [userID[0].user_id]);
+
+  let fetchFruitsTotal =
+  `SELECT ROUND(SUM(fruits_bought)::numeric, 2) AS total_fruits
+    FROM food
+    WHERE user_id = $1;`;
+  const fruitsTotal = await db.one(fetchFruitsTotal, [userID[0].user_id]);
+
+  let fetchFoodEmissionsGlobal =
+  `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions
+    FROM food;`;
+  const foodEmissionsGlobal = await db.one(fetchFoodEmissionsGlobal);
+
+  let fetchBeefGlobal =
+  `SELECT ROUND(SUM(beef_bought)::numeric, 2) AS total_beef
+    FROM food;`;
+  const beefGlobal = await db.one(fetchBeefGlobal);
+
+  let fetchDairyGlobal =
+  `SELECT ROUND(SUM(dairy_bought)::numeric, 2) AS total_dairy
+    FROM food;`;
+  const dairyGlobal = await db.one(fetchDairyGlobal);
+
+  let fetchFruitsGlobal =
+  `SELECT ROUND(SUM(fruits_bought)::numeric, 2) AS total_fruits
+    FROM food;`;
+  const fruitsGlobal = await db.one(fetchFruitsGlobal);
+
+  // queries to populate household stats
+
+  let fetchHouseEmissionsTotal = 
+  `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions
+    FROM household
+    WHERE user_id = $1;`;
+  const houseEmissionsTotal = await db.one(fetchHouseEmissionsTotal, [userID[0].user_id]);
+
+  let fetchElectricityTotal =
+  `SELECT ROUND(SUM(electricity_used)::numeric, 2) AS total_electricity
+    FROM household
+    WHERE user_id = $1;`;
+  const electricityTotal = await db.one(fetchElectricityTotal, [userID[0].user_id]);
+
+  let fetchWaterTotal =
+  `SELECT SUM(ROUND((water_used/0.009)::numeric, 2)) AS total_water
+    FROM household
+    WHERE user_id = $1;`;
+  const waterTotal = await db.one(fetchWaterTotal, [userID[0].user_id]);
+
+  let fetchHouseEmissionsGlobal = 
+  `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions
+    FROM household;`;
+  const houseEmissionsGlobal = await db.one(fetchHouseEmissionsGlobal);
+
+  let fetchElectricityGlobal =
+  `SELECT ROUND(SUM(electricity_used)::numeric, 2) AS total_electricity
+    FROM household;`;
+  const electricityGlobal = await db.one(fetchElectricityGlobal);
+
+  let fetchWaterGlobal =
+  `SELECT SUM(ROUND((water_used/0.009)::numeric, 2)) AS total_water
+    FROM household;`;
+  const waterGlobal = await db.one(fetchWaterGlobal);
+
+  res.render('pages/home', {
+    tip: tip, 
+    user: USERNAME, 
+    entriesTotal: entriesTotal.total_entries, 
+    emissionsTotal: emissionsTotal.total_emissions, 
+    carbonScore: carbonScore.user_carbonscore, 
+    userRank: userRank.row_number, 
+    popGlobal: popGlobal.population, 
+    entriesGlobal: entriesGlobal.global_entries, 
+    emissionsGlobal: emissionsGlobal.global_emissions, 
+    avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore,
+    milesTotal: milesTotal.total_miles,
+    travelEmissionsTotal: travelEmissionsTotal.total_emissions,
+    maxEmissionVehicle: maxEmissionVehicle.travel_mode,
+    popularVehicle: popularVehicle.travel_mode,
+    milesGlobal: milesGlobal.total_miles,
+    travelEmissionsGlobal: travelEmissionsGlobal.total_emissions,
+    maxEmissionVehicleGlobal: maxEmissionVehicleGlobal.travel_mode,
+    popularVehicleGlobal: popularVehicleGlobal.travel_mode,
+    foodEmissionsTotal: foodEmissionsTotal.total_emissions,
+    beefTotal: beefTotal.total_beef,
+    dairyTotal: dairyTotal.total_dairy,
+    fruitsTotal: fruitsTotal.total_fruits,
+    foodEmissionsGlobal: foodEmissionsGlobal.total_emissions,
+    beefGlobal: beefGlobal.total_beef,
+    dairyGlobal: dairyGlobal.total_dairy,
+    fruitsGlobal: fruitsGlobal.total_fruits,
+    houseEmissionsTotal: houseEmissionsTotal.total_emissions,
+    electricityTotal: electricityTotal.total_electricity,
+    waterTotal: waterTotal.total_water,
+    houseEmissionsGlobal: houseEmissionsGlobal.total_emissions,
+    electricityGlobal: electricityGlobal.total_electricity,
+    waterGlobal: waterGlobal.total_water
+  });
 });
 
 // leaderboard routines -------------------------------------------
-const leaderboard_all = 'SELECT row_number() OVER(ORDER BY user_carbonscore), username, user_carbonscore FROM users;';
+const leaderboard_all = 'SELECT row_number() OVER(ORDER BY user_carbonscore), username, ROUND(user_carbonscore::numeric, 2) AS user_carbonscore FROM users;';
 app.get('/leaderboard', (req, res) => {
   db.any(leaderboard_all)
     .then((leaders) => {
       res.render('pages/leaderboard.ejs', {
         leaders,
+        user: USERNAME
       });
     });
 });
@@ -302,7 +560,7 @@ app.get('/my-profile', (req, res) =>{
 });
 
 app.get('/profile', (req,res) =>{
-  let query = `SELECT user_id, username, user_carbonscore, user_description FROM users WHERE username = '${req.query.user}';`;
+  let query = `SELECT user_id, username, ROUND(user_carbonscore::numeric, 2) AS user_carbonscore, user_description FROM users WHERE username = '${req.query.user}';`;
   
   // checks to see if this is the logged in user's profile
   let isUser = false;
@@ -320,31 +578,27 @@ app.get('/profile', (req,res) =>{
     console.log('user::::', user);
     console.log('user id::::', user.user_id);
 
-    let fetchTravelData = `SELECT * FROM travel WHERE user_id = ${user.user_id}`;
-    let fetchEmissionTotal = `SELECT SUM(emissions) AS total_emissions FROM travel WHERE user_id = ${user.user_id};`;
+    let fetchTravelData = `SELECT travel_mode, travel_distance, ROUND(emissions::numeric, 2) AS emissions, TO_CHAR(date, 'Mon dd, yyyy') AS clean_date FROM travel WHERE user_id = ${user.user_id} ORDER BY date DESC LIMIT 5`;
+    let fetchFoodData = `SELECT ROUND(beef_bought::numeric, 2) AS beef_bought, ROUND(dairy_bought::numeric, 2) AS dairy_bought, ROUND(fruits_bought::numeric, 2) AS fruits_bought, ROUND(emissions::numeric, 2) AS emissions, TO_CHAR(date, 'Mon dd, yyyy') AS clean_date FROM food WHERE user_id = ${user.user_id} ORDER BY date DESC LIMIT 5`;
+    let fetchHouseholdData = `SELECT ROUND(electricity_used::numeric, 2) AS electricity_used, ROUND((water_used/0.009)::numeric, 2) AS water_used, ROUND(emissions::numeric, 2) AS emissions, TO_CHAR(date, 'Mon dd, yyyy') AS clean_date FROM household WHERE user_id = ${user.user_id} ORDER BY date DESC LIMIT 5`;
+    let fetchEmissionTotal = `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions FROM travel WHERE user_id = ${user.user_id};`;
     db.task('get-everything', task=>{
-      return task.batch([task.any(fetchTravelData),task.any(fetchEmissionTotal)]);
+      return task.batch([task.any(fetchTravelData),task.any(fetchFoodData),task.any(fetchHouseholdData),task.any(fetchEmissionTotal)]);
     })
     .then(data=>{
       let trips = data[0];
-      let total = data[1];
+      let foods = data[1];
+      let households = data[2];
+      let total = data[3];
       console.log(trips);
       console.log(total);
-      res.render('pages/profile.ejs', {user: user, userTrip: trips, emissionTotal: total, editing: isUser});
+      res.render('pages/profile.ejs', {user: user, userTrip: trips, foodData: foods ,householdData: households, emissionTotal: total, editing: isUser});
     })
   })
   .catch(err =>{
     console.log(err);
   })
 });
-
-// prevents ' character from messing with strings
-async function editString(string){
-  string = string.replace(/'/g, '\'\'');
-  console.log('EDITED STRING:::', string);
-
-  return string;
-}
 
 app.post('/edit-description', async(req,res)=>{
   let description = await editString(req.body.description);
@@ -623,7 +877,7 @@ app.get('/logout', (req, res) => {
   // Destroys the session.
   console.log('session destroyed.')
   req.session.destroy();
-  res.render("pages/login");
+  res.render('pages/login', {message: 'Successfully logged out.'});
   USERNAME = '';
 });
 

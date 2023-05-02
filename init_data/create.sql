@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
   user_id SERIAL PRIMARY KEY,
-  username VARCHAR(100) NOT NULL,
+  username VARCHAR(20) NOT NULL,
   user_password VARCHAR(300) NOT NULL,
   user_weightfactor FLOAT NOT NULL,
   user_carbonscore FLOAT NOT NULL,

@@ -36,7 +36,7 @@
                 </div>
                 <form action = "/edit-description" method = "POST">
                     <div class="modal-body">
-                        <input type = "text" name = "description" id ="description" class = "description-input-box">
+                        <textarea name = "description" id ="description" class = "description-input-box" rows = "7"><%= user.user_description %></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
