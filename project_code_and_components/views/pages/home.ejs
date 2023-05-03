@@ -108,15 +108,6 @@
   <!-- TRAVEL STATS ------------------------------------------- -->
   <h3>Your Travel Stats</h3>
   <div class = "stat-container">
-    <!-- total miles traveled -->
-    <div class="card" style="width: 18rem;">
-      <div class="card-body">
-        <h5 class="card-title"><%= milesTotal %> mi</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
-        <p class="card-text">Your total miles traveled</p>
-      </div>
-    </div>
-
     <!-- total travel emissions -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
@@ -126,21 +117,30 @@
       </div>
     </div>
 
-    <!-- most emitting vehicle -->
+    <!-- zero emissions miles -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">TODO</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
-        <p class="card-text">Your most carbon emitting mode of transportation</p>
+        <h5 class="card-title"><%= zeroMilesTotal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Your total miles traveled by walking and biking</p>
       </div>
     </div>
 
-    <!-- most commonly used vehicle -->
+    <!-- public transit miles -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title">TODO</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
-        <p class="card-text">Your most commonly used mode of transportation</p>
+        <h5 class="card-title"><%= transitMilesTotal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Your total miles traveled by bus and train</p>
+      </div>
+    </div>
+
+    <!-- heavy emissions miles -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= badMilesTotal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Your total miles traveled by car and airplane</p>
       </div>
     </div>
 
@@ -149,15 +149,6 @@
 
   <h3>Global Travel Stats</h3>
   <div class = "stat-container">
-    <!-- total miles traveled for all users -->
-    <div class="card" style="width: 18rem;">
-      <div class="card-body">
-        <h5 class="card-title"><%= milesGlobal %> mi</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
-        <p class="card-text">Total miles traveled across all users</p>
-      </div>
-    </div>
-
     <!-- total travel emissions for all users -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
@@ -167,21 +158,30 @@
       </div>
     </div>
 
-    <!-- most emitting vehicle for all users -->
+    <!-- zero emissions miles for all users -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title"><%= maxEmissionVehicleGlobal %></h5>
-        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
-        <p class="card-text">Most carbon emitting mode of transportation across all users</p>
+        <h5 class="card-title"><%= zeroMilesGlobal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Total miles traveled by walking and biking across all users</p>
       </div>
     </div>
 
-    <!-- most used vehicle for all users -->
+    <!-- public transit miles for all users -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title"><%= popularVehicleGlobal %></h5>
-        <h6 class="card-subtitle mb-2 text-muted">Vehicle</h6>
-        <p class="card-text">Most commonly used mode of transportation across all users</p>
+        <h5 class="card-title"><%= transitMilesGlobal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Total miles traveled by bus and train across all users</p>
+      </div>
+    </div>
+
+    <!-- heavy emissions miles for all users -->
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title"><%= badMilesGlobal %> mi</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Distance Traveled</h6>
+        <p class="card-text">Total miles traveled by car and airplane across all users</p>
       </div>
     </div>
 
