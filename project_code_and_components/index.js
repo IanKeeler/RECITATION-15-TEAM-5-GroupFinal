@@ -367,18 +367,18 @@ app.get('/home', async(req,res) => {
     WHERE user_id = $1;`;
   const travelEmissionsTotal = await db.one(fetchTravelEmissionsTotal, [userID[0].user_id]);
 
-  let fetchMaxEmissionVehicle =
+/*  let fetchMaxEmissionVehicle =
   `SELECT travel_mode
     FROM
-      (SELECT travel_mode, SUM(emissions) AS emissions_sum
+      (SELECT user_id, travel_mode, SUM(emissions) AS emissions_sum
         FROM travel
         WHERE user_id = $1
-        GROUP BY travel_mode
+        GROUP BY user_id, travel_mode
         ORDER BY emissions_sum DESC
         LIMIT 1) subquery;`;
-  const maxEmissionVehicle = await db.one(fetchMaxEmissionVehicle, [userID[0].user_id]);
+  const maxEmissionVehicle = await db.one(fetchMaxEmissionVehicle, [userID[0].user_id]);*/
 
-  let fetchPopularVehicle =
+/*  let fetchPopularVehicle =
   `SELECT travel_mode
     FROM
       (SELECT travel_mode, COUNT(*) AS popularity
@@ -387,7 +387,7 @@ app.get('/home', async(req,res) => {
         GROUP BY travel_mode
         ORDER BY popularity DESC
         LIMIT 1) subquery;`;
-  const popularVehicle = await db.one(fetchPopularVehicle, [userID[0].user_id]);
+  const popularVehicle = await db.one(fetchPopularVehicle, [userID[0].user_id]);*/
 
   let fetchMilesGlobal = `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles FROM travel;`;
   const milesGlobal = await db.one(fetchMilesGlobal);
@@ -509,8 +509,8 @@ app.get('/home', async(req,res) => {
     avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore,
     milesTotal: milesTotal.total_miles,
     travelEmissionsTotal: travelEmissionsTotal.total_emissions,
-    maxEmissionVehicle: maxEmissionVehicle.travel_mode,
-    popularVehicle: popularVehicle.travel_mode,
+//    maxEmissionVehicle: maxEmissionVehicle.travel_mode,
+//    popularVehicle: popularVehicle.travel_mode,
     milesGlobal: milesGlobal.total_miles,
     travelEmissionsGlobal: travelEmissionsGlobal.total_emissions,
     maxEmissionVehicleGlobal: maxEmissionVehicleGlobal.travel_mode,
