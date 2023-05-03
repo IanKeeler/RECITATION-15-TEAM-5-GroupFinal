@@ -236,6 +236,17 @@ hr{
     cursor: pointer;
 }
 
+#more-stats-link{
+    position: absolute;
+    right: 4rem;
+    margin: 0.5rem;
+}
+
+/* my stats page --------------------------------------- */
+#return-home{
+    padding-bottom: 0.5rem;
+}
+
 /* log page --------------------------------------- */
 #log-disclaimer{
     padding-top: 0.5rem;

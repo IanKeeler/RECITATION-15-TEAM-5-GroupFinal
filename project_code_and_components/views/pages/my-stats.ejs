@@ -1,0 +1,200 @@
+<%- include ('../partials/header') %> 
+<%- include ('../partials/navbar') %>
+<main class = "content">
+    <div id = "return-home"><a class = "dark-link" href = "/home"><< View general stats</a></div>
+    <!-- TRAVEL STATS ------------------------------------------- -->
+  <h3>Your Travel Stats</h3>
+  <table class = "table table-striped">
+    <colgroup>
+        <col span = "1">
+        <col span = "1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th scope = "col"></th>
+            <th scope = "col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total travel emissions</td>
+            <td class = "td-vertical-center"><%= travelEmissionsTotal %> kg</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Miles from zero-emission travel</td>
+            <td class = "td-vertical-center"><%= zeroMilesTotal %> mi</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Miles by public transport</td>
+            <td class = "td-vertical-center"><%= transitMilesTotal %> mi</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Miles by emission-heavy travel</td>
+            <td class = "td-vertical-center"><%= badMilesTotal %> mi</td>
+        </tr>
+    </tbody>
+  </table>
+  
+  <br>
+  <!-- GLOBAL TRAVEL STATS ------------------------------------------- -->
+  <h3>Global Travel Stats</h3>
+  <table class = "table table-striped">
+    <colgroup>
+        <col span = "1">
+        <col span = "1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th scope = "col"></th>
+            <th scope = "col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Travel emissions across users</td>
+            <td class = "td-vertical-center"><%= travelEmissionsGlobal %> kg</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Zero-emissions miles across users</td>
+            <td class = "td-vertical-center"><%= zeroMilesGlobal %> mi</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Public transport miles across users</td>
+            <td class = "td-vertical-center"><%= transitMilesGlobal %> mi</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Heavy-emissions miles across users</td>
+            <td class = "td-vertical-center"><%= badMilesGlobal %> mi</td>
+        </tr>
+    </tbody>
+  </table>
+  
+  <br>
+  <!-- YOUR FOOD STATS ------------------------------------------- -->
+  <h3>Your Food Stats</h3>
+  <table class = "table table-striped">
+    <colgroup>
+        <col span = "1">
+        <col span = "1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th scope = "col"></th>
+            <th scope = "col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total food emissions</td>
+            <td class = "td-vertical-center"><%= foodEmissionsTotal %> kg</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total beef spending</td>
+            <td class = "td-vertical-center">$<%= beefTotal %></td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total dairy spending</td>
+            <td class = "td-vertical-center">$<%= dairyTotal %></td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total fruit spending</td>
+            <td class = "td-vertical-center">$<%= fruitsTotal %></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <!-- GLOBAL FOOD STATS ------------------------------------------- -->
+  <h3>Your Food Stats</h3>
+  <table class = "table table-striped">
+    <colgroup>
+        <col span = "1">
+        <col span = "1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th scope = "col"></th>
+            <th scope = "col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total food emissions across users</td>
+            <td class = "td-vertical-center"><%= foodEmissionsGlobal %> kg</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total beef spending across users</td>
+            <td class = "td-vertical-center">$<%= beefGlobal %></td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total dairy spending across users</td>
+            <td class = "td-vertical-center">$<%= dairyGlobal %></td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total fruit spending across users</td>
+            <td class = "td-vertical-center">$<%= fruitsGlobal %></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <!-- GLOBAL FOOD STATS ------------------------------------------- -->
+  <h3>Your Household Stats</h3>
+  <table class = "table table-striped">
+    <colgroup>
+        <col span = "1">
+        <col span = "1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th scope = "col"></th>
+            <th scope = "col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total household emissions</td>
+            <td class = "td-vertical-center"><%= houseEmissionsTotal %> kg</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total kilowatt-hours of electricity use</td>
+            <td class = "td-vertical-center"><%= electricityTotal %> kWh</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total gallons of water uses</td>
+            <td class = "td-vertical-center"><%= waterTotal %> gal</td>
+        </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <!-- GLOBAL FOOD STATS ------------------------------------------- -->
+  <h3>Global Household Stats</h3>
+  <table class = "table table-striped">
+    <colgroup>
+        <col span = "1">
+        <col span = "1">
+    </colgroup>
+    <thead>
+        <tr>
+            <th scope = "col"></th>
+            <th scope = "col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total household emissions across users</td>
+            <td class = "td-vertical-center"><%= houseEmissionsGlobal %> kg</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total kilowatt-hours of electricity use across users</td>
+            <td class = "td-vertical-center"><%= electricityGlobal %> kWh</td>
+        </tr>
+        <tr scope = "row">
+            <td class = "td-vertical-center">Total gallons of water uses across users</td>
+            <td class = "td-vertical-center"><%= waterGlobal %> gal</td>
+        </tr>
+    </tbody>
+  </table>
+</main>
+<%- include ('../partials/footer') %>
