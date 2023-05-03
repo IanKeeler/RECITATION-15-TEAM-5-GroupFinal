@@ -353,6 +353,25 @@ app.get('/home', async(req,res) => {
   let fetchAvgCarbonscoreGlobal = `SELECT ROUND(AVG(user_carbonscore)::numeric, 2) AS avg_carbonscore FROM users;`;
   const avgCarbonscoreGlobal = await db.one(fetchAvgCarbonscoreGlobal);
 
+  res.render('pages/home', {
+    tip: tip, 
+    user: USERNAME, 
+    entriesTotal: entriesTotal.total_entries, 
+    emissionsTotal: emissionsTotal.total_emissions, 
+    carbonScore: carbonScore.user_carbonscore, 
+    userRank: userRank.row_number, 
+    popGlobal: popGlobal.population, 
+    entriesGlobal: entriesGlobal.global_entries, 
+    emissionsGlobal: emissionsGlobal.global_emissions, 
+    avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore
+  });
+});
+
+app.get('/my-stats', async (req,res) =>{
+  // get the currently logged in user's user_id
+  let getUserID = `SELECT user_id FROM users WHERE username = '${USERNAME}';`;
+  const userID = await db.any(getUserID);
+
   // queries to populate travel stats
   let fetchTravelEmissionsTotal =
   `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions
@@ -492,17 +511,7 @@ app.get('/home', async(req,res) => {
     FROM household;`;
   const waterGlobal = await db.one(fetchWaterGlobal);
 
-  res.render('pages/home', {
-    tip: tip, 
-    user: USERNAME, 
-    entriesTotal: entriesTotal.total_entries, 
-    emissionsTotal: emissionsTotal.total_emissions, 
-    carbonScore: carbonScore.user_carbonscore, 
-    userRank: userRank.row_number, 
-    popGlobal: popGlobal.population, 
-    entriesGlobal: entriesGlobal.global_entries, 
-    emissionsGlobal: emissionsGlobal.global_emissions, 
-    avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore,
+  res.render('pages/my-stats', {
     //milesTotal: milesTotal.total_miles,
     travelEmissionsTotal: travelEmissionsTotal.total_emissions,
     zeroMilesTotal: zeroMilesTotal.total_miles,
