@@ -354,66 +354,62 @@ app.get('/home', async(req,res) => {
   const avgCarbonscoreGlobal = await db.one(fetchAvgCarbonscoreGlobal);
 
   // queries to populate travel stats
-
-  let fetchMilesTotal =
-  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
-  FROM travel
-  WHERE user_id = $1;`;
-  const milesTotal = await db.one(fetchMilesTotal, [userID[0].user_id]);
-
   let fetchTravelEmissionsTotal =
   `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions
     FROM travel
     WHERE user_id = $1;`;
   const travelEmissionsTotal = await db.one(fetchTravelEmissionsTotal, [userID[0].user_id]);
 
-  let fetchMaxEmissionVehicle =
-  `SELECT travel_mode
-    FROM
-      (SELECT travel_mode, SUM(emissions) AS emissions_sum
-        FROM travel
-        WHERE user_id = $1
-        GROUP BY travel_mode
-        ORDER BY emissions_sum DESC
-        LIMIT 1) subquery;`;
-  const maxEmissionVehicle = await db.one(fetchMaxEmissionVehicle, [userID[0].user_id]);
+  /*let fetchMilesTotal =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+    FROM travel
+    WHERE user_id = $1;`;
+  const milesTotal = await db.one(fetchMilesTotal, [userID[0].user_id]);*/
 
-  let fetchPopularVehicle =
-  `SELECT travel_mode
-    FROM
-      (SELECT travel_mode, COUNT(*) AS popularity
-        FROM travel
-        WHERE user_id = $1
-        GROUP BY travel_mode
-        ORDER BY popularity DESC
-        LIMIT 1) subquery;`;
-  const popularVehicle = await db.one(fetchPopularVehicle, [userID[0].user_id]);
+  let fetchZeroMiles =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+    FROM travel
+    WHERE user_id = $1
+    AND travel_mode IN ('walking', 'biking');`;
+    const zeroMilesTotal = await db.one(fetchZeroMiles, [userID[0].user_id]);
 
-  let fetchMilesGlobal = `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles FROM travel;`;
-  const milesGlobal = await db.one(fetchMilesGlobal);
+  let fetchTransitMiles =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+    FROM travel
+    WHERE user_id = $1
+    AND travel_mode IN ('bus', 'train');`;
+    const transitMilesTotal = await db.one(fetchTransitMiles, [userID[0].user_id]);
   
+  let fetchBadMiles =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+    FROM travel
+    WHERE user_id = $1
+    AND travel_mode IN ('car', 'airplane');`;
+    const badMilesTotal = await db.one(fetchBadMiles, [userID[0].user_id]);
+
   let fetchTravelEmissionsGlobal = `SELECT ROUND(SUM(emissions)::numeric, 2) AS total_emissions FROM travel;`;
-  const travelEmissionsGlobal = await db.one(fetchTravelEmissionsGlobal);
+  const travelEmissionsGlobal = await db.one(fetchTravelEmissionsGlobal);      
 
-  let fetchMaxEmissionVehicleGlobal =
-  `SELECT travel_mode
-    FROM
-      (SELECT travel_mode, SUM(emissions) AS emissions_sum
-        FROM travel
-        GROUP BY travel_mode
-        ORDER BY emissions_sum DESC
-        LIMIT 1) subquery;`;
-  const maxEmissionVehicleGlobal = await db.one(fetchMaxEmissionVehicleGlobal);
+  /*let fetchMilesGlobal = `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles FROM travel;`;
+  const milesGlobal = await db.one(fetchMilesGlobal);*/
 
-  let fetchPopularVehicleGlobal =
-  `SELECT travel_mode
-    FROM
-      (SELECT travel_mode, COUNT(*) AS popularity
-        FROM travel
-        GROUP BY travel_mode
-        ORDER BY popularity DESC
-        LIMIT 1) subquery;`;
-  const popularVehicleGlobal = await db.one(fetchPopularVehicleGlobal);
+  let fetchZeroMilesGlobal =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+    FROM travel
+    WHERE travel_mode IN ('walking', 'biking');`;
+  const zeroMilesGlobal = await db.one(fetchZeroMilesGlobal);
+
+  let fetchTransitMilesGlobal =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+    FROM travel
+    WHERE travel_mode IN ('bus', 'train');`;
+  const transitMilesGlobal = await db.one(fetchTransitMilesGlobal);
+    
+  let fetchBadMilesGlobal =
+  `SELECT ROUND(SUM(travel_distance)::numeric, 2) AS total_miles
+    FROM travel
+    WHERE travel_mode IN ('car', 'airplane');`;
+  const badMilesGlobal = await db.one(fetchBadMilesGlobal);
 
   // queries to populate food stats
 
@@ -507,14 +503,16 @@ app.get('/home', async(req,res) => {
     entriesGlobal: entriesGlobal.global_entries, 
     emissionsGlobal: emissionsGlobal.global_emissions, 
     avgCarbonscoreGlobal: avgCarbonscoreGlobal.avg_carbonscore,
-    milesTotal: milesTotal.total_miles,
+    //milesTotal: milesTotal.total_miles,
     travelEmissionsTotal: travelEmissionsTotal.total_emissions,
-    maxEmissionVehicle: maxEmissionVehicle.travel_mode,
-    popularVehicle: popularVehicle.travel_mode,
-    milesGlobal: milesGlobal.total_miles,
+    zeroMilesTotal: zeroMilesTotal.total_miles,
+    transitMilesTotal: transitMilesTotal.total_miles,
+    badMilesTotal: badMilesTotal.total_miles,
+    //milesGlobal: milesGlobal.total_miles,
     travelEmissionsGlobal: travelEmissionsGlobal.total_emissions,
-    maxEmissionVehicleGlobal: maxEmissionVehicleGlobal.travel_mode,
-    popularVehicleGlobal: popularVehicleGlobal.travel_mode,
+    zeroMilesGlobal: zeroMilesGlobal.total_miles,
+    transitMilesGlobal: transitMilesGlobal.total_miles,
+    badMilesGlobal: badMilesGlobal.total_miles,
     foodEmissionsTotal: foodEmissionsTotal.total_emissions,
     beefTotal: beefTotal.total_beef,
     dairyTotal: dairyTotal.total_dairy,
@@ -618,23 +616,6 @@ app.post('/edit-description', async(req,res)=>{
 });
 
 // log routines --------------------------------------------------
-
-async function travelCarbonScore(travel_mode, passengers, distance){
-  let cScore = 0;
-  if(travel_mode === "airplane") {
-    cScore = 1.6 * distance;
-  } else if(travel_mode === "car") {
-    cScore = (1.4 - (0.05 * passengers)) * distance;
-  } else if (travel_mode === "train") {
-    cScore = distance;
-  } else if (travel_mode === "walking" || travel_mode === "biking") {
-    cScore = -2 * distance;
-  } else {
-    cScore = -0.8 * distance;
-  }
-  return cScore;
-}
-
 app.get('/log', (req,res) => {
   res.render('pages/log', { 
     travelEmissions: null,
@@ -644,23 +625,42 @@ app.get('/log', (req,res) => {
 });
 
 // Travel route
-app.post('/travel_log', async(req, res) => {
-  let travelScore = await travelCarbonScore(req.body.travel_mode, req.body.travel_mode === "car" ? req.body.passengers : 0, req.body.distance);
-
-  if(req.body.travel_mode === "walking" || req.body.travel_mode === "biking") {
-      const getUserID = "SELECT * FROM users WHERE username = $1";
+app.post('/travel_log', (req, res) => {
+  travelActivityID = {
+    "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
+    "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
+    "bus": 'passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na',
+    "train": 'passenger_train-route_type_commuter_rail-fuel_source_na'
+  }
+  axios({
+    url: 'https://beta3.api.climatiq.io/estimate',
+    method: 'POST',
+    dataType: 'json',
+    headers: {
+      'Authorization': 'Bearer ' +  process.env.API_KEY,
+    },
+    data: {
+      emission_factor: {
+        'activity_id': travelActivityID[req.body.travel_mode],
+      },
+      parameters: {
+        'passengers': 1,
+        'distance': parseInt(req.body.distance),
+        'distance_unit': "mi"
+      },
+    },
+  })
+    .then(results => {
+      const getUserID = "SELECT user_id FROM users WHERE username = $1";
       const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
-      const carbonScoreQuery = "UPDATE users SET user_carbonscore = $1 WHERE user_id = $2";
 
-      db.any(getUserID, [USERNAME])
+      db.one(getUserID, [USERNAME])
         .then(user => {
-          console.log("This is user data: ", user);
-          db.none(travelQuery, [req.body.travel_mode, req.body.distance, 0, req.body.travel_date, user[0].user_id])
-          db.none(carbonScoreQuery, [(user[0].user_carbonscore + travelScore), user[0].user_id])
+          db.none(travelQuery, [req.body.travel_mode, req.body.distance, results.data.co2e, req.body.travel_date, user.user_id])
             .then(() => {
               const travelEmissions = {
-                co2e: 0,
-                units: 'kg'
+                co2e: results.data.co2e,
+                units: results.data.co2e_unit
               }
               res.render('pages/log', {travelEmissions, householdEmissions: null, foodEmissions: null});
             })
@@ -671,60 +671,10 @@ app.post('/travel_log', async(req, res) => {
         .catch(err => {
           console.log("There was an error fetching the user_id", err);
         });
-  } else {
-    travelActivityID = {
-      "car": 'passenger_vehicle-vehicle_type_black_cab-fuel_source_na-distance_na-engine_size_na',
-      "airplane": 'passenger_flight-route_type_domestic-aircraft_type_jet-distance_na-class_na-rf_included',
-      "bus": 'passenger_vehicle-vehicle_type_bus-fuel_source_na-distance_na-engine_size_na',
-      "train": 'passenger_train-route_type_commuter_rail-fuel_source_na'
-    }
-    axios({
-      url: 'https://beta3.api.climatiq.io/estimate',
-      method: 'POST',
-      dataType: 'json',
-      headers: {
-        'Authorization': 'Bearer ' +  process.env.API_KEY,
-      },
-      data: {
-        emission_factor: {
-          'activity_id': travelActivityID[req.body.travel_mode],
-        },
-        parameters: {
-          'passengers': 1,
-          'distance': parseInt(req.body.distance),
-          'distance_unit': "mi"
-        },
-      },
     })
-      .then(results => {
-        const getUserID = "SELECT * FROM users WHERE username = $1";
-        const travelQuery = "INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
-        const carbonScoreQuery = "UPDATE users SET user_carbonscore = $1 WHERE user_id = $2";
-
-        db.any(getUserID, [USERNAME])
-          .then(user => {
-            console.log("This is user data: ", user);
-            db.none(travelQuery, [req.body.travel_mode, req.body.distance, results.data.co2e, req.body.travel_date, user[0].user_id])
-            db.none(carbonScoreQuery, [(user[0].user_carbonscore + travelScore), user[0].user_id])
-              .then(() => {
-                const travelEmissions = {
-                  co2e: results.data.co2e,
-                  units: results.data.co2e_unit
-                }
-                res.render('pages/log', {travelEmissions, householdEmissions: null, foodEmissions: null});
-              })
-              .catch(err => {
-                console.log("There was an error entering data into the travel table", err);
-              });
-          })
-          .catch(err => {
-            console.log("There was an error fetching the user_id", err);
-          });
-      })
-      .catch(error => {
-        res.render('pages/log', {result: [], message: "One of the travel API calls have failed."});
-      });
-  }
+    .catch(error => {
+      res.render('pages/log', {result: [], message: "One of the travel API calls have failed."});
+    });
 })
 
 // Household route
@@ -788,15 +738,12 @@ app.post('/household_log', (req, res) => {
             console.log("There is an error processing the household API call", error);
         }
       }
-      let householdCarbonScore = (1.2 * req.body.heat) + req.body.light + (0.2 * req.body.phone) + (0.2 * (totalWaterUsage/.009));
-      const getUserID = "SELECT * FROM users WHERE username = $1";
+      const getUserID = "SELECT user_id FROM users WHERE username = $1";
       const householdQuery = "INSERT INTO household (electricity_used, water_used, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5)";
-      const carbonScoreQuery = "UPDATE users SET user_carbonscore = $1 WHERE user_id = $2";
 
-      db.any(getUserID, [USERNAME])
+      db.one(getUserID, [USERNAME])
         .then(user => {
-          db.none(householdQuery, [totalEnergyUsage, totalWaterUsage, householdEmissions, req.body.household_date, user[0].user_id])
-          db.none(carbonScoreQuery, [(user[0].user_carbonscore + householdCarbonScore), user[0].user_id])
+          db.none(householdQuery, [totalEnergyUsage, totalWaterUsage, householdEmissions, req.body.household_date, user.user_id])
             .then(() => {
               res.render('pages/log', {householdEmissions, travelEmissions: null, foodEmissions: null});
             })
@@ -877,15 +824,12 @@ app.post('/food_log', (req,res) => {
           console.log("There is an error processing the household API call", error);
       }
     }
-    let foodCarbonScore = (1.4 * req.body.beef) + (1.4 * req.body.dairy) - (0.6 * req.body.fruits);
-    const getUserID = "SELECT * FROM users WHERE username = $1";
+    const getUserID = "SELECT user_id FROM users WHERE username = $1";
     const foodQuery = "INSERT INTO food (beef_bought, dairy_bought, fruits_bought, emissions, date, user_id) VALUES ($1, $2, $3, $4, $5, $6)";
-    const carbonScoreQuery = "UPDATE users SET user_carbonscore = $1 WHERE user_id = $2";
 
-    db.any(getUserID, [USERNAME])
+    db.one(getUserID, [USERNAME])
       .then(user => {
-        db.none(foodQuery, [parseInt(req.body.beef), parseInt(req.body.dairy), parseInt(req.body.fruits), foodEmissions, req.body.food_date, user[0].user_id])
-        db.none(carbonScoreQuery, [(user[0].user_carbonscore + foodCarbonScore), user[0].user_id])
+        db.none(foodQuery, [parseInt(req.body.beef), parseInt(req.body.dairy), parseInt(req.body.fruits), foodEmissions, req.body.food_date, user.user_id])
           .then(() => {
             res.render('pages/log', {foodEmissions, travelEmissions: null, householdEmissions: null});
           })

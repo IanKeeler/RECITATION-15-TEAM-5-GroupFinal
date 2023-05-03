@@ -78,8 +78,8 @@ INSERT INTO users (username, user_password, user_weightfactor, user_carbonscore,
 -- -----------------------------------------------------
 
 INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 16, 20, '2023-04-01', 1);
-INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 16, 10, '2023-04-01', 2);
-INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 16, 5, '2023-04-01', 3);
+INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 10, 10, '2023-04-01', 2);
+INSERT INTO travel (travel_mode, travel_distance, emissions, date, user_id) VALUES ('car', 26, 5, '2023-04-01', 3);
 
 /* INSERT INTO freight (freight_mode, freight_weight, freight_distance, emissions, date, user_id) VALUES ('road', 15, 25, 30, '2023-04-01', 1);
 INSERT INTO freight (freight_mode, freight_weight, freight_distance, emissions, date, user_id) VALUES ('road', 15, 25, 15, '2023-04-01', 2);
