@@ -1,190 +1,171 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/navbar') %>
-<head>
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
-    <script>
-        function togglePassengers() {
-            const travelMode = document.getElementById("travel_mode").value;
-            const extraInput = document.getElementById("extra_input")
-            if(travelMode == "car" || travelMode == "bus") {
-                extraInput.classList.remove("hidden")
-            } else {
-                extraInput.classList.add("hidden")
-            }
-        }
-        function showMode(){
-            const inputMode = document.getElementById("input_mode").value;
-            const travelForm = document.getElementById("travel")
-            const electricForm = document.getElementById("household")
-            const freightForm = document.getElementById("food")
-            const outerBox = document.getElementById("outer-box")
-            if(inputMode == "travel"){
-                travelForm.classList.remove("hidden")
-                electricForm.classList.add("hidden")
-                freightForm.classList.add("hidden")
-                outerBox.style.display = ""
-            }
-            if(inputMode == "household"){
-                travelForm.classList.add("hidden")
-                electricForm.classList.remove("hidden")
-                freightForm.classList.add("hidden")
-                outerBox.style.display = ""
-            }
-            if(inputMode == "food"){
-                travelForm.classList.add("hidden")
-                freightForm.classList.remove("hidden")
-                electricForm.classList.add("hidden")
-                outerBox.style.display = "";
-            }
-        }
-    </script>
-</head>
-<body>
-    <main>
-        <%- include ('../partials/message') %>
-        <div class="content">
-            <h1 style="text-align: center">Input Personal Usage For Each Category</h1>
-        </div>
+<script defer src = "../js/log.js"></script>
+<main class = "content">
+    <%- include ('../partials/message') %>
+    <h1>Post Entry</h1>
+    <div class="box" id = "log-type-box">
+        <label for="input_mode">Entry Type: </label>
 
-        <div class="content box" style="text-align: left">
-            <label for="input_mode">Input Mode </label>
-
-            <select id="input_mode" name="input_mode" onchange="showMode()">
-                <option value="" selected disabled>Select</option>
-                <option value="travel">Travel</option>
-                <option value="household">Household</option>
-                <option value="food">Food</option>
-            </select>
-        </div>
-        <div class="content box" id="outer-box" style="text-align: left; display: none;">
+        <select id="input_mode" name="input_mode" onchange="showMode()">
+            <option value="" selected disabled>Select</option>
+            <option value="travel">Travel</option>
+            <option value="household">Household</option>
+            <option value="food">Food</option>
+        </select>
+    </div>
+    <div id = "log-disclaimer"><em>Note: You can only submit one type of entry at once.</em></div>
+    <br>
+    <div id = "log-wrapper">
+        <!-- display submission box (left) -------------------- -->
+        <div>
+            <div id = "starter-prompt">
+                <% if(travelEmissions == null && householdEmissions == null && foodEmissions == null){ %>
+                    <p>Please select an entry type.</p>
+                <% }else{ %>
+                    <p>Entry successfully added!</p>
+                <% } %>
+            </div>
+            <div id="outer-box" class = "box" style="display: none;">
 
             <!-- Travel Input -->
-            <form id="travel" class="hidden" action="/travel_log" method="POST">
-                <h2 style="color: #343a40">Travel Data</h2>
+            <form id="travel" class="hidden log-form" action="/travel_log" method="POST">
+                <h3>Travel Log</h3>
                 <hr>
-                <div>
-                    <label for="travel_mode">Travel Mode</label>
-                    <select id="travel_mode" name="travel_mode" onchange="togglePassengers()">
+                <div class = "log-input-container">
+                    <label for="travel_mode">Travel Mode:</label>
+                    <select id="travel_mode" name="travel_mode" onchange="togglePassengers()" required>
                         <option value="" selected disabled>Select</option>
                         <option value="car">Car</option>
                         <option value="bus">Bus</option>
                         <option value="train">Train</option>
                         <option value="airplane">Airplane</option>
-                    </select>
-                    <div id="extra_input" class="hidden">
-                        <label for="passengers">Passengers</label>
-                        <input type="text" id="passengers" name="passengers">
-                    </div>
-                </div>
-                <div>
-                    <label for="distance">Distance Traveled in Miles: </label>
-                    <input type="text" id="distance" name="distance"> 
-                </div>
-                <div>
-                    <label for="travel_date">Date</label>
-                    <input type="date" id="travel_date" name="travel_date">
+                        <option value="walking">Walking</option>
+                        <option value="biking">Biking</option>
+                    </select>  
+    
+                    <label for="passengers" class = "hidden" id = "passengers-label">Passengers</label>
+                    <input type="text" id="passengers" name="passengers" class = "hidden" pattern = "[0-9]+">
+                
+                    <label for="distance">Distance Traveled (mi): </label>
+                    <input type="text" id="distance" name="distance" required pattern = "[0-9]+"> 
+                
+                    <label for="travel_date">Date:</label>
+                    <input type="date" id="travel_date" name="travel_date" required>
                 </div>
                 <br>
-                <button type="submit" class = "btn btn-outline-primary">Submit</button>
+                <div id = "log-button-position">
+                    <div></div>
+                    <button type="submit" class = "btn btn-outline-primary log-submit">Submit</button>
+                </div>
             </form>
 
             <!-- Household Input -->
             <form id="household" class="hidden" action="/household_log" method="POST">
-                <h2 style="color: #343a40">Household Data</h2>
+                <h3>Household Log</h3>
                 <hr>
                 <div>
-                    <h3 style="color: #a4cb03">Electricity</h3>
-                    <div>
-                        <label for="light">Household Light Usage (hours)</label>
-                        <input type="text" id="light" name="light"> 
-                    </div>
-                    <div>
-                        <label for="heat">Household Heat Usage(hours)</label>
-                        <input type="text" id="heat" name="heat"> 
-                    </div>
-                    <div>
-                        <label for="phone">Phone Usage(hours)</label>
-                        <input type="text" id="phone" name="phone"> 
+                    <h5 style="color: #a4cb03">Electricity</h5>
+                    <div class = "log-input-container">
+                        <label for="light">Household Light Usage (hr):</label>
+                        <input type="text" id="light" name="light" required pattern = "[0-9]+"> 
+
+                        <label for="heat">Household Heat Usage(hr):</label>
+                        <input type="text" id="heat" name="heat" required pattern = "[0-9]+"> 
+                    
+                        <label for="phone">Phone Usage(hr):</label>
+                        <input type="text" id="phone" name="phone" required pattern = "[0-9]+"> 
                     </div>
                 </div>
+
                 <br>
                 <div>
-                    <h3 style="color: #a4cb03">Water Usage</h3>
-                    <div>
-                        <label for="shower">Time Spent Showering(minutes)</label>
-                        <input type="text" id="shower" name="shower"> 
-                    </div>
-                    <div>
-                        <label for="toilet">Number of Toilet Flushes</label>
-                        <input type="text" id="toilet" name="toilet"> 
+                    <h5 style="color: #a4cb03">Water Usage</h5>
+                    <div class = "log-input-container">
+                        <label for="shower">Time Spent Showering(min):</label>
+                        <input type="text" id="shower" name="shower" required pattern = "[0-9]+"> 
+                    
+                        <label for="toilet">Number of Toilet Flushes:</label>
+                        <input type="text" id="toilet" name="toilet" required pattern = "[0-9]+"> 
                     </div>
                 </div>
+
                 <br>
-                <div>
-                    <label for="household_date">Date</label>
-                    <input type="date" id="household_date" name="household_date">
+                <h5>Other Information</h5>
+                <div class = "log-input-container">
+                    <label for="household_date">Date:</label>
+                    <input type="date" id="household_date" name="household_date" required>
                 </div>
                 <br>
-                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
+
+                <div id = "log-button-position">
+                    <div></div>
+                    <button type="submit" class = "btn btn-outline-primary log-submit">Submit</button>
+                </div>
             </form>
 
             <!-- Food Input -->
             <form id="food" class="hidden" action="/food_log" method="POST">
-                <h2 style="color: #343a40">Food Data</h2>
+                <h3>Food Log</h3>
                 <hr>
-                <div>
-                    <label for="beef">Money Spent on Beef($)</label>
-                    <input type="text" id="beef" name="beef"> 
+                <div class = "log-input-container">
+                    <label for="beef">Money Spent on Beef($):</label>
+                    <input type="text" id="beef" name="beef" required pattern = "[0-9]+(\.){0,1}[0-9]{2}"> 
+
+                    <label for="dairy">Money Spent on Dairy($):</label>
+                    <input type="text" id="dair" name="dairy" required pattern = "[0-9]+(\.){0,1}[0-9]{2}"> 
+
+                    <label for="fruits">Money Spent on Greens($):</label>
+                    <input type="text" id="fruits" name="fruits" required pattern = "[0-9]+(\.){0,1}[0-9]{2}"> 
                 </div>
-                <div>
-                    <label for="dairy">Money Spent on Dairy($)</label>
-                    <input type="text" id="dair" name="dairy"> 
-                </div>
-                <div>
-                    <label for="fruits">Money Spent on Fruits and Vegetables($)</label>
-                    <input type="text" id="fruits" name="fruits"> 
-                </div>
-                <div>
+
+                <br>
+                <div class = "log-input-container">
                     <label for="food_date">Date</label>
-                    <input type="date" id="food_date" name="food_date">
+                    <input type="date" id="food_date" name="food_date" required>
                 </div>
                 <br>
-                <button type = "submit" class = "btn btn-outline-primary">Submit</button>
+                
+                <div id = "log-button-position">
+                    <div></div>
+                    <button type="submit" class = "btn btn-outline-primary log-submit">Submit</button>
+                </div>
             </form>
 
-        <!-- Printing results  -->
+        <!-- Printing results -------------------- -->
         </div>
-        <div class="content box" style="<% if (travelEmissions == null) { %> display: none;<% } %>">
-            <h2 style="color: #343a40">Emission Results</h2>
-            <hr>
-            <div>
-                <h3>Travel Emissions</h3> 
-                CO2: <%= travelEmissions != null ? travelEmissions.co2e.toFixed(3) + " "  + travelEmissions.units : "none" %>
-            </div>
         </div>
 
-        <div class="content box" style="<% if (householdEmissions == null) { %> display: none;<% } %>">
-            <h2 style="color: #343a40">Emission Results</h2>
+        <!-- display results box (right) -------------------- -->
+        <div id = "log-results-wrapper" class = "box">
+            <h3>Results:</h3>
             <hr>
-            <div>
-                <h3>Household Emissions</h3> 
-                CO2: <%= householdEmissions != null ? householdEmissions.toFixed(3) + " kg" : "none" %>
-            </div>
-        </div>
+            <% if(travelEmissions == null && householdEmissions == null && foodEmissions == null){ %>
+                <em>Results will appear here on submission.</em>
+            <% }else{ %>
+                <div style="<% if (travelEmissions == null) { %> display: none;<% } %>">
+                    <div>
+                        <h5>Travel Entry</h5> 
+                        <span class = "log-result"><strong>CO<sub>2</sub>:</strong> <%= travelEmissions != null ? travelEmissions.co2e.toFixed(3) + " "  + travelEmissions.units : "none" %></span>
+                    </div>
+                </div>
 
-        <div class="content box" style="<% if (foodEmissions == null) { %> display: none;<% } %>">
-            <h2 style="color: #343a40">Emission Results</h2>
-            <hr>
-            <div>
-                <h3>Food Emissions</h3> 
-                CO2: <%= foodEmissions != null ? foodEmissions.toFixed(3) + " kg" : "none" %>
-            </div>
-        </div>
+                <div style="<% if (householdEmissions == null) { %> display: none;<% } %>">
+                    <div>
+                        <h5>Household Entry</h5> 
+                        <span class = "log-result"><strong>CO<sub>2</sub>:</strong> <%= householdEmissions != null ? householdEmissions.toFixed(3) + " kg" : "none" %></span>
+                    </div>
+                </div>
 
-    </main>
-</body>
+                <div style="<% if (foodEmissions == null) { %> display: none;<% } %>">
+                    <div>
+                        <h5>Food Entry</h5> 
+                        <span class = "log-result"><strong>CO<sub>2</sub>:</strong> <%= foodEmissions != null ? foodEmissions.toFixed(3) + " kg" : "none" %></span>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+</main>
 <%- include ('../partials/footer') %>
