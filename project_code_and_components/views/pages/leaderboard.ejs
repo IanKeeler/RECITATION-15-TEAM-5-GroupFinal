@@ -36,7 +36,8 @@
         <% if(actualPredecessor === null){ %>
           <p>Congratulations!  You're the top user on the site!</p>
         <% }else{ %>
-          <p>You're <strong><%= userScore - actualPredecessor.user_carbonscore%></strong> points behind <strong><%= actualPredecessor.username %></strong>!</p>
+          <% let difference = (userScore - actualPredecessor.user_carbonscore).toFixed(2); %>
+          <p>You're <strong><%= difference %></strong> points behind <strong><%= actualPredecessor.username %></strong>!</p>
         <% } %>
       </div>
 
