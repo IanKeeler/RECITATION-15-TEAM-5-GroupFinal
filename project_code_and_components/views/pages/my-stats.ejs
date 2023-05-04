@@ -4,7 +4,7 @@
     <div id = "return-home"><a class = "dark-link" href = "/home"><< View general stats</a></div>
     <!-- TRAVEL STATS ------------------------------------------- -->
   <h3>Your Travel Stats</h3>
-  <table class = "table table-striped">
+  <table class = "table table-striped stat-table">
     <colgroup>
         <col span = "1">
         <col span = "1">
@@ -18,19 +18,23 @@
     <tbody>
         <tr scope = "row">
             <td class = "td-vertical-center">Total travel emissions</td>
-            <td class = "td-vertical-center"><%= travelEmissionsTotal %> kg</td>
+            <% let a = travelEmissionsTotal ? travelEmissionsTotal : 0;  %>
+            <td class = "td-vertical-center"><%= a %> kg</td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Miles from zero-emission travel</td>
-            <td class = "td-vertical-center"><%= zeroMilesTotal %> mi</td>
+            <% let b = zeroMilesTotal ? zeroMilesTotal : 0; %>
+            <td class = "td-vertical-center"><%= b %> mi</td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Miles by public transport</td>
-            <td class = "td-vertical-center"><%= transitMilesTotal %> mi</td>
+            <% let c = transitMilesTotal ? transitMilesTotal : 0; %>
+            <td class = "td-vertical-center"><%= c %> mi</td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Miles by emission-heavy travel</td>
-            <td class = "td-vertical-center"><%= badMilesTotal %> mi</td>
+            <% let d = badMilesTotal ? badMilesTotal : 0; %>
+            <td class = "td-vertical-center"><%= d %> mi</td>
         </tr>
     </tbody>
   </table>
@@ -38,7 +42,7 @@
   <br>
   <!-- GLOBAL TRAVEL STATS ------------------------------------------- -->
   <h3>Global Travel Stats</h3>
-  <table class = "table table-striped">
+  <table class = "table table-striped stat-table">
     <colgroup>
         <col span = "1">
         <col span = "1">
@@ -72,7 +76,7 @@
   <br>
   <!-- YOUR FOOD STATS ------------------------------------------- -->
   <h3>Your Food Stats</h3>
-  <table class = "table table-striped">
+  <table class = "table table-striped stat-table">
     <colgroup>
         <col span = "1">
         <col span = "1">
@@ -86,19 +90,26 @@
     <tbody>
         <tr scope = "row">
             <td class = "td-vertical-center">Total food emissions</td>
-            <td class = "td-vertical-center"><%= foodEmissionsTotal %> kg</td>
+            <% let e = foodEmissionsTotal ? foodEmissionsTotal : 0; %>
+            <td class = "td-vertical-center"><%= e %> kg</td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Total beef spending</td>
-            <td class = "td-vertical-center">$<%= beefTotal %></td>
+            <% let f = beefTotal ? beefTotal : 0; %>
+            <% if(f === 0) {f = f.toFixed(2)} %>
+            <td class = "td-vertical-center">$<%= f %></td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Total dairy spending</td>
-            <td class = "td-vertical-center">$<%= dairyTotal %></td>
+            <% let g = dairyTotal ? dairyTotal : 0; %>
+            <% if(g === 0) {g = g.toFixed(2)} %>
+            <td class = "td-vertical-center">$<%= g %></td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Total fruit spending</td>
-            <td class = "td-vertical-center">$<%= fruitsTotal %></td>
+            <% let h = fruitsTotal ? fruitsTotal : 0; %>
+            <% if(h === 0) {h = h.toFixed(2)} %>
+            <td class = "td-vertical-center">$<%= h %></td>
         </tr>
     </tbody>
   </table>
@@ -106,7 +117,7 @@
   <br>
   <!-- GLOBAL FOOD STATS ------------------------------------------- -->
   <h3>Your Food Stats</h3>
-  <table class = "table table-striped">
+  <table class = "table table-striped stat-table">
     <colgroup>
         <col span = "1">
         <col span = "1">
@@ -138,9 +149,9 @@
   </table>
 
   <br>
-  <!-- GLOBAL FOOD STATS ------------------------------------------- -->
+  <!-- HOUSEHOLD STATS ------------------------------------------- -->
   <h3>Your Household Stats</h3>
-  <table class = "table table-striped">
+  <table class = "table table-striped stat-table">
     <colgroup>
         <col span = "1">
         <col span = "1">
@@ -154,23 +165,26 @@
     <tbody>
         <tr scope = "row">
             <td class = "td-vertical-center">Total household emissions</td>
-            <td class = "td-vertical-center"><%= houseEmissionsTotal %> kg</td>
+            <% let i = houseEmissionsTotal ? houseEmissionsTotal : 0; %>
+            <td class = "td-vertical-center"><%= i %> kg</td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Total kilowatt-hours of electricity use</td>
-            <td class = "td-vertical-center"><%= electricityTotal %> kWh</td>
+            <% let j = electricityTotal ? electricityTotal : 0; %>
+            <td class = "td-vertical-center"><%= j %> kWh</td>
         </tr>
         <tr scope = "row">
             <td class = "td-vertical-center">Total gallons of water uses</td>
-            <td class = "td-vertical-center"><%= waterTotal %> gal</td>
+            <% let k = waterTotal ? waterTotal : 0; %>
+            <td class = "td-vertical-center"><%= k %> gal</td>
         </tr>
     </tbody>
   </table>
 
   <br>
-  <!-- GLOBAL FOOD STATS ------------------------------------------- -->
+  <!-- GLOBAL HOUSEHOLD STATS ------------------------------------------- -->
   <h3>Global Household Stats</h3>
-  <table class = "table table-striped">
+  <table class = "table table-striped stat-table">
     <colgroup>
         <col span = "1">
         <col span = "1">
