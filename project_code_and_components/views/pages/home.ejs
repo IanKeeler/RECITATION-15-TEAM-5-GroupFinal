@@ -36,7 +36,8 @@
     <!-- total emissions  -->
     <div class="card" style="width: 18rem;">
       <div class="card-body">
-        <h5 class="card-title"><%= emissionsTotal %> kg</h5>
+        <% let displayedEmissions = emissionsTotal ? emissionsTotal : 0;  %>
+        <h5 class="card-title"><%= displayedEmissions %> kg</h5>
         <h6 class="card-subtitle mb-2 text-muted">Emissions</h6>
         <p class="card-text">Your logged carbon emissions</p>
       </div>
