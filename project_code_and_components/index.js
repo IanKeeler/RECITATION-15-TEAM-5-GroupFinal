@@ -158,7 +158,7 @@ app.post('/register', async(req,res)=>{
   let processedUsername = await editString(req.body.username);
 
   // default carbonscore/weight factor
-  let carbonScore = 50;
+  let carbonScore = 500;
   let weightFactor = 1;
 
   let checkUser = 'SELECT username FROM users WHERE username = $1;';
