@@ -247,6 +247,16 @@ hr{
     padding-bottom: 0.5rem;
 }
 
+.stat-table tr td:first-child{
+    width: 80%;
+}
+
+.stat-table tr td:last-child{
+    width: 20%;
+    text-align: right;
+    padding-right: 0.5rem;
+}
+
 /* log page --------------------------------------- */
 #log-disclaimer{
     padding-top: 0.5rem;
